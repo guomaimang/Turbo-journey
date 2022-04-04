@@ -12,6 +12,7 @@ typedef struct typePerson{
 typedef struct typeTeam{
   int index;
   char name[11];
+  char project[10];
 
   int manager; 	// 从职员库中索引定位
   int memberCount; // how many member
@@ -33,13 +34,14 @@ typedef struct typeEvent{
   int endTime;		// 10-18
 
   int priority;   // FCFS 中可无视
-  char whichTeam[11];
+  char name[11]; // project name
+  char project[10];
 
 }event;
 
 extern event eventArr[200];
-extern person personArr[10];
-extern team teamArr[256];
+extern person personArr[9];
+extern team teamArr[6];
 
 enum {BUF = 255};
 
