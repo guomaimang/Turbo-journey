@@ -25,15 +25,10 @@ typedef struct typeEvent{
   int index;
 
   int teamID;
-  int manager; 	// 从职员库中索引定位
-  int memberCount; // how many member
-  int member[3];
-
   int holdDay; 		// 0-17
   int startTime;  // 9-17
   int endTime;		// 10-18
 
-  int priority;   // FCFS 中可无视
   char name[11]; // project name
   char project[10];
 
