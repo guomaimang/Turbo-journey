@@ -37,6 +37,8 @@ typedef struct typeEvent{
 extern event eventArr[200];
 extern person personArr[9];
 extern team teamArr[6];
+extern char toDate[18][11];
+extern char toTime[10][6];
 
 enum {BUF = 255};
 
