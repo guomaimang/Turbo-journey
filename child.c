@@ -105,6 +105,24 @@ int FCFSChild(childInput *input){
                 return -1;
             sscanf(*rem, "%d$%d$%d$%s", &me.index, &me.manageTeam, &me.asMember, me.name);
             write(input->c2f[1], "D", 1);
+        }else if(token[0] == 'R'){
+            int xx, yy;
+            sscanf(*rem, "%d$%d", &xx, &yy);
+            int i;
+            int anss = 0;
+            int vis[200] = {0};
+            for(i = xx; i <= yy; ++i){
+               int j;
+               for(j = 0; j < 9; ++j){
+                    if(myCalandar[i][j] > 0 && !vis[myCalandar[i][j]]){
+                        vis[myCalandar[i][j]] = 1;
+                        ++anss;
+                    }
+               }
+            }
+            char buf3[10];
+            sprintf(buf3, "A$%d", anss);
+            write(input->c2f[1], buf3, 10);
         }
     }
     exit(0);
