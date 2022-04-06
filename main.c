@@ -187,7 +187,7 @@ int main(int argc, char *argv[]) {
             close(fda[i][0]);
         }
 
-        char* buf[100];
+        char buf[100];
 
         while (part_num != 4) {
             part_num=menu();
@@ -244,7 +244,7 @@ int main(int argc, char *argv[]) {
                             if (temp.holdDay != -1) {
                                 temp.index=next_meeting;
                                 eventArr[next_meeting] = temp;
-                                write(fd[0], event2str('E',temp,buf), strlen(buf));
+                                write(fd[0][1], event2str('E',temp,buf), strlen(buf));
                                 next_meeting++;
                                 print_event(temp, personArr);
                             } else {
