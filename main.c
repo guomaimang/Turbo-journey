@@ -168,7 +168,7 @@ int main(int argc, char *argv[]) {
         if(pipe(fda[i])<0)printf("pipe error\n");
     }
 
-    int part_num = menu();
+    int part_num =0;
     char user_input_buf[100] = "1";
 
     for (int i = 0; i < 2 ;i++) {
@@ -181,14 +181,13 @@ int main(int argc, char *argv[]) {
         f_number++;
     }
 
-    if(pid==0) {
+    if(pid!=0) {
         for (int i=0;i<2;i++){
             close(fd[i][1]);
             close(fda[i][0]);
         }
 
         char buf[100];
-
         while (part_num != 4) {
             part_num=menu();
             switch (part_num) {
@@ -196,15 +195,16 @@ int main(int argc, char *argv[]) {
                     //                这里应该是一个while循环，直到用户输入“0”之后才结束
                     printf("Please input information of the team in the format :\n\"Team_X Project_X Leader_name Member_name_1 Member_name_2 Member_name_3\"\n");
                     printf("Enter > ");
+                    getchar();
+//                    fgets(user_input_buf,100,stdin);
                     gets(user_input_buf);
                     printf("Input is: %s\n", user_input_buf);
                     while ((user_input_buf[0] - '0') != 0) {
 
                         team temp = create_team(user_input_buf, personArr);
-
                         printf("Enter > ");
+//                    fgets(user_input_buf,100,stdin);
                         gets(user_input_buf);
-
                         print_team(temp, personArr, personArr);
                         if (next_team >= 5) {
                             printf("Already 5 teams");
@@ -229,6 +229,7 @@ int main(int argc, char *argv[]) {
                         strcpy(buf,"");
                         teamArr[next_team] = temp;
                         printf("Team \"%s\" for project \"%s\" is created\n",temp.name,temp.project);
+                        printf("%s",team2str('A',temp,buf));
                     }
                     break;
                 case 2 :
@@ -237,6 +238,8 @@ int main(int argc, char *argv[]) {
                     while ((user_input_buf[0] - '0') != 0) {
                         printf("please input information of the meeting in the format :\n\"Team_X yyyy-mm-dd hh:mm x\"\n");
                         printf("Enter > ");
+                        getchar();
+//                    fgets(user_input_buf,100,stdin);
                         gets(user_input_buf);
                         printf("Input is: %s\n", user_input_buf);
                         if (strncmp(user_input_buf, "Team_", 5) == 0) {
@@ -258,7 +261,8 @@ int main(int argc, char *argv[]) {
                             continue;
                         }
                         while (!feof(f)) {
-                            fgets(user_input_buf, 100, f);
+//                    fgets(user_input_buf,100,stdin);
+                            gets(user_input_buf);
                             if (strncmp(user_input_buf, "Team_", 5) == 0) {
                                 temp = str2event(user_input_buf, teamArr);
                                 if (temp.holdDay != -1) {
@@ -270,6 +274,8 @@ int main(int argc, char *argv[]) {
                         }
                     }
                 case 3 :
+                    getchar();
+//                    fgets(user_input_buf,100,stdin);
                     gets(user_input_buf);
                     //                对用户输入进行转义，之后进行输出
                     //                do part 3
