@@ -201,6 +201,9 @@ int main(int argc,char* argv[]) {
                     for (int j = 0; j < teamArr[i].memberCount; ++j) {
                         // 1. tell child j to try
                         event2str('E',eventArr[i],message);
+                        strcpy(f1buf[j],message);
+                        write(f1fd[j][1], f1buf[j],101);
+                        
                         // 2. listen child j's feedback
                         while(1){
                             sleep(1);
@@ -208,9 +211,9 @@ int main(int argc,char* argv[]) {
                             if (np < 0){
                                 continue;}
                             if (cbuf[j][0] == 'N'){
+                                arrangement = 0;
                                 break;
                             } else if (cbuf[j][0] == 'Y'){
-                                arrangement = 1;
                                 break;
                             }
                         }
@@ -219,6 +222,8 @@ int main(int argc,char* argv[]) {
                             while (1){
                                 // 1. tell child j to add
                                 event2str('E',eventArr[i],message);
+                                strcpy(f1buf[j],message);
+                                write(f1fd[j][1], f1buf[j],101);
                                 // 2. wait ack
                                 if (np < 0){
                                     continue;} else {break;}
@@ -271,3 +276,4 @@ int main(int argc,char* argv[]) {
 
     return 0;
 }
+
