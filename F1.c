@@ -194,16 +194,17 @@ int main(int argc,char* argv[]) {
             // schedule event i
             for (int i = 0; i < eventUsage; ++i) {
                 int mod = 0;
-                int arrangement = 1;
 
                 while (mod < 37){
+                    int arrangement = 1;
                     char message[101];
                     for (int j = 0; j < teamArr[i].memberCount; ++j) {
+
                         // 1. tell child j to try
                         event2str('E',eventArr[i],message);
                         strcpy(f1buf[j],message);
                         write(f1fd[j][1], f1buf[j],101);
-                        
+
                         // 2. listen child j's feedback
                         while(1){
                             sleep(1);
@@ -217,22 +218,24 @@ int main(int argc,char* argv[]) {
                                 break;
                             }
                         }
+
                         // 3. if all feedbacks say available, tell child do and break
                         if (arrangement == 1){
                             while (1){
+                                sleep(1);
                                 // 1. tell child j to add
-                                event2str('E',eventArr[i],message);
-                                strcpy(f1buf[j],message);
                                 write(f1fd[j][1], f1buf[j],101);
                                 // 2. wait ack
                                 if (np < 0){
                                     continue;} else {break;}
                             }
+                            eventSuccess[i] = 1;
                         }
-                        eventSuccess[i] = 0;
+
                         // 4. if anyone feedback says unavailable or time illegal, modify time and jump to 1
                         if (arrangement == 0){
                             while (1){
+                                sleep(1);
                                 event* eventPtr = &eventArr[i];
                                 int modOutcome = modTime(++mod,eventPtr);
                                 if (modOutcome == 1 || mod > 37){
@@ -244,6 +247,7 @@ int main(int argc,char* argv[]) {
                 }
             }
 
+            // after schedule, print all event
             for (int i = 0; i < 8; ++i) {
                 cbuf[i][0] = 'P';
                 cbuf[i][1] = 0;
