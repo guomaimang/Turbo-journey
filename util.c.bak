@@ -45,7 +45,7 @@ person personArr[9] =
     {8, "Helen", -1, 0},
 };
 
-char* event2str(char sig, event e, char* str){
+char* event2str(char sig, event* e, char* str){
     sprintf(str,"%c$3$%d$%d$%d$%d$%d$%s$%s",sig,e->index,e->teamID,e->holdDay,e->startTime,e->endTime,e->name,e->project);
     return str;
 }

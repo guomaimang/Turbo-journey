@@ -103,13 +103,11 @@ void sortEventArr() {
 int schedule(int eventID) {
 	int teamID=event[eventID].teamID;
 	int i;
-	char send[10],rcv[10];
-	send[0]=ADDEVENT;
-	send[1]='$';
+	char send[80]={0},rcv[10];
+	event2str(ADDEVENT,eventID,send);
 	int flag=1;
 	//manager as a member?
 	for(i=0;i<teamArr[teamID].memberCount;++i) {
-		ssprintf(send+2,"%d$\0",eventID);
 		WRITE(i);
 		READ(i);
 		if(rcv[0]=='N') {
@@ -168,9 +166,48 @@ void scheduleAll() {
 		reschedule(now);
 	}
 }
-int main() {	
-	// for testing
 
+void print(int begin,int end) {
+	FILE *out;
+	out=fopen("Schedule_MINE.txt","w");
+	fputs("*** Project Meeting ***",out);
+	fputs("",out);
+	fputs("Algorithm used: MINE",out);
+	fprintf(out,"PeriodL %s to %s\n",);
+	//how to use toDate?
+	fputs("",out);
+	fputs("Date          Start   End     Team     Project\n",out);
+	fputs("===========================================================================",out);
+	int i;
+	for(i=0;i<eventCnt;++i) {
+		fprintf(out,"%13s %7s %7s %8s %s",);
+		//same
+		
+	}
+	char send[]="P$";
+	for(i=1;i<8;++i) {
+		WRITE(i);
+		READ(i);
+	}
+}
+
+int fd[10][2][2];
+
+int main() {
+	//open pipe & fork
+	int i,retpid;
+	for(i=0;i<8;++i) {
+		if(pipe(fd[i][0])<0 || pipe(fd[i][1])<0) {
+			exit(1);
+		}
+	}
+	for(i=0;i<8;++i) {
+		retpid=fork();
+		if(retpid==0) break;
+	}
+	
+	
+	// for testing
 	eventCnt=10;
 	sortEventArr();
 	
