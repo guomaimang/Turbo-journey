@@ -42,3 +42,4 @@ extern char toTime[10][6];
 
 enum {BUF = 255};
 
+extern int trySchedule(event *e, int wfd[8][2], int rfd[8][2]);

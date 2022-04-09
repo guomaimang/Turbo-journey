@@ -1,3 +1,5 @@
+#include <stdio.h>
+#include <unistd.h>
 #include "util.h"
 char toDate[18][11] = {
     "2022-04-25",   
@@ -34,13 +36,39 @@ char toTime[10][6] = {
 
 person personArr[9] = 
 {
-    {0, "", -1, 0},
-    {1, "Alan", -1, 0},
-    {2, "Billy", -1, 0},
-    {3, "Cathy", -1, 0},
-    {4, "David", -1, 0},
-    {5, "Eva", -1, 0},
-    {6, "Fanny", -1, 0},
-    {7, "Gary", -1, 0},
-    {8, "Helen", -1, 0},
+    {0, "Alan", -1, 0},
+    {1, "Billy", -1, 0},
+    {2, "Cathy", -1, 0},
+    {3, "David", -1, 0},
+    {4, "Eva", -1, 0},
+    {5, "Fanny", -1, 0},
+    {6, "Gary", -1, 0},
+    {7, "Helen", -1, 0},
 };
+
+int trySchedule(event *e, int wfd[8][2], int rfd[8][2]){
+    char buf[BUF] = "";
+    char buf2[BUF] = "";
+    sprintf(buf, "T$3$%d$%d$%d$%d$%d$%s$%s", e->index, e->teamID, e->holdDay, e->startTime, e->endTime, e->name, e->project);
+    int i;
+    int succ = 1;
+    for(i = 0; i < 8; ++i){
+        write(wfd[i][1], buf, BUF);
+        read(rfd[i][0], buf2, BUF);
+        if(buf2[0] == 'Y') continue;
+        succ = 0;
+        int j;
+        for(j=0; j<=i; ++j){
+            write(wfd[i][1], "C", 1);
+            read(rfd[i][0], buf2, BUF);
+        }
+        return 0;
+    }
+    if(succ){
+        for(i=0; i<8; ++i){
+            write(wfd[i][1], "A", 1);
+            read(rfd[i][0], buf2, BUF);
+        }
+    }else return -1;
+    return 1; 
+}
