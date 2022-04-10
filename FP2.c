@@ -42,6 +42,8 @@ person personArr[9]={
 		{7,"Helen",-1,0}
 };
 
+int fd[10][2][2];
+int FF[2][2];
 // sort by priority
 // sort by endtime
 // sort by starttime
@@ -100,8 +102,10 @@ void sortEventArr() {
 }
 
 // int scheduled[200]={0};
+#define WRITE(i) write(fd[i][0][1],send,80)
+#define READ(i) read(fd[i][1][0],rcv,80)
 int schedule(int eventID) {
-	int teamID=event[eventID].teamID;
+	int teamID=eventArr[eventID].teamID;
 	int i;
 	char send[80]={0},rcv[10];
 	event2str(ADDEVENT,eventID,send);
@@ -125,7 +129,7 @@ int schedule(int eventID) {
 	}
 	return flag;
 }
-int unhandled[2][200],tot[2]=0;
+int unhandled[2][200],tot[2]={0};
 void scheduleAll() {
 	
 	int i;
@@ -142,9 +146,9 @@ void scheduleAll() {
 				curTeam=eventArr[now].teamID;
 				curHours=0;
 			}
-			if(curHours+eventArr[now].dutation>L0) continue;
+			if(curHours+eventArr[now].endTime-eventArr[now].startTime>L0) continue;
 			if(schedule(now)) {
-				curHours+=eventArr[now].dutation;
+				curHours+=eventArr[now].endTime-eventArr[now].startTime;
 				moreHandled=1;
 			}
 			else {
@@ -155,14 +159,14 @@ void scheduleAll() {
 		if(!moreHandled) break;
 	}
 	for(i=0;i<tot[dr];++i) {
-		int now=unhandled[dt][i];
+		int now=unhandled[dr][i];
 		if(!schedule(now)) {
-			unhandled[dr^1][tot[dr^1]++]=unhandled[now];
+			unhandled[dr^1][tot[dr^1]++]=unhandled[now][dr];
 		}
 	}
 	dr^=1;
 	for(i=0;i<tot[dr];++i) {
-		int now=unhandled[dt][i];
+		int now=unhandled[dr][i];
 		reschedule(now);
 	}
 }
@@ -182,59 +186,14 @@ void print(int beginDate,int endDate) {
 		event* now=&eventArr[i];
 		fprintf(out,"%13s %7s %7s %8s %s",toDate[now->holdDay],toTime[now->startTime],toTime[now->endTime],teamArr[now->teamID].name,teamArr[now->teamID].project);
 	}
-	char send[]="P$";
+	char send[]="P$",rcv[10];
 	for(i=1;i<8;++i) {
 		WRITE(i);
 		READ(i);
 	}
 }
-
-int fd[10][2][2];
-int FF[2][2];
-int main() {
-	//open pipe & fork
-	int i,retpid;
-	for(i=0;i<8;++i) {
-		if(pipe(fd[i][0])<0 || pipe(fd[i][1])<0) {
-			exit(1);
-		}
-	}
-	//how to get FF[][]?
-	for(i=0;i<8;++i) {
-		retpid=fork();
-		if(retpid==0) {
-			//for child
-			break;
-		}
-	}
-	//for parent
-	char rcv1[80],send1[]="O$";
-	while(1) {
-		read(FF[0][0],rcv1,80);
-		switch(rcv1[0]) {
-			case 'F': //end
-				write(FF[1][1],send1,2);
-				exit(0);
-				break;
-			case 'E': //event
-				event tmp=ins2event(rcv1);
-				eventArr[tmp.index]=tmp;
-				write(FF[1][1],send1,2);
-				break;
-			case 'G': //group
-				team tmp=ins2team(rcv1);
-				teamArr[tmp.index]=tmp;
-				write(FF[1][1],send1,2);
-				break;
-			case 'P': //print
-				scheduleAll();
-				print();//from ? to?
-				write(FF[1][1],send1,2);
-				break;
-		}
-	}
-	exit(0);
-}
+#undef WRITE
+#undef READ
 event ins2event(char ins[]) {
 	event ret;
 	char* token=strtok(ins,"$");
@@ -271,4 +230,51 @@ team ins2team(char ins[]) {
 		token=strtok(NULL,"$");
 	}
 	return ret;
+}
+
+int main() {
+	//open pipe & fork
+	int i,retpid;
+	for(i=0;i<8;++i) {
+		if(pipe(fd[i][0])<0 || pipe(fd[i][1])<0) {
+			exit(1);
+		}
+	}
+	//how to get FF[][]?
+	for(i=0;i<8;++i) {
+		retpid=fork();
+		if(retpid==0) {
+			//for child
+			break;
+		}
+	}
+	//for parent
+	char rcv1[80],send1[]="O$";
+	while(1) {
+		read(FF[0][0],rcv1,80);
+		switch(rcv1[0]) {
+			case 'F': //end
+				write(FF[1][1],send1,2);
+				exit(0);
+				break;
+			case 'E': {//event
+				event tmp=ins2event(rcv1);
+				eventArr[tmp.index]=tmp;
+				write(FF[1][1],send1,2);
+				break;
+			}
+			case 'G': {//group
+				team tmp=ins2team(rcv1);
+				teamArr[tmp.index]=tmp;
+				write(FF[1][1],send1,2);
+				break;
+			}
+			case 'P': //print
+				scheduleAll();
+				print();//from ? to?
+				write(FF[1][1],send1,2);
+				break;
+		}
+	}
+	exit(0);
 }
