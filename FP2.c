@@ -106,7 +106,7 @@ int schedule(int eventID) {
 	char send[80]={0},rcv[10];
 	event2str(ADDEVENT,eventID,send);
 	int flag=1;
-	//manager as a member?
+	//manager as a member
 	for(i=0;i<teamArr[teamID].memberCount;++i) {
 		WRITE(i);
 		READ(i);
@@ -167,22 +167,20 @@ void scheduleAll() {
 	}
 }
 
-void print(int begin,int end) {
+void print(int beginDate,int endDate) {
 	FILE *out;
 	out=fopen("Schedule_MINE.txt","w");
 	fputs("*** Project Meeting ***",out);
 	fputs("",out);
 	fputs("Algorithm used: MINE",out);
-	fprintf(out,"PeriodL %s to %s\n",);
-	//how to use toDate?
+	fprintf(out,"PeriodL %s to %s\n",toDate[beginDate],toDate[endDate]);
 	fputs("",out);
 	fputs("Date          Start   End     Team     Project\n",out);
 	fputs("===========================================================================",out);
 	int i;
 	for(i=0;i<eventCnt;++i) {
-		fprintf(out,"%13s %7s %7s %8s %s",);
-		//same
-		
+		event* now=&eventArr[i];
+		fprintf(out,"%13s %7s %7s %8s %s",toDate[now->holdDay],toTime[now->startTime],toTime[now->endTime],teamArr[now->teamID].name,teamArr[now->teamID].project);
 	}
 	char send[]="P$";
 	for(i=1;i<8;++i) {
@@ -236,4 +234,41 @@ int main() {
 		}
 	}
 	exit(0);
+}
+event ins2event(char ins[]) {
+	event ret;
+	char* token=strtok(ins,"$");
+	ret.index=atoi(token);
+	token=strtok(NULL,"$");
+	ret.teamID=atoi(token);
+	token=strtok(NULL,"$");
+	ret.holdDay=atoi(token);
+	token=strtok(NULL,"$");
+	ret.startTime=atoi(token);
+	token=strtok(NULL,"$");
+	ret.endTime=atoi(token);
+	token=strtok(NULL,"$");
+	memcpy(ret.name,token,sizeof token);
+	token=strtok(NULL,"$");
+	return ret;
+}
+team ins2team(char ins[]) {
+	team ret;
+	char* token=strtok(ins,"$");
+	ret.index=atoi(token);
+	token=strtok(NULL,"$");
+	memcpy(ret.name,token,sizeof token);
+	token=strtok(NULL,"$");
+	memcpy(ret.project,token,sizeof token);
+	token=strtok(NULL,"$");
+	ret.manager=atoi(token);
+	token=strtok(NULL,"$");
+	ret.memberCount=atoi(token);
+	token=strtok(NULL,"$");
+	int i;
+	for(i=0;token!=NULL;++i) {
+		ret.member[i]=atoi(token);
+		token=strtok(NULL,"$");
+	}
+	return ret;
 }
