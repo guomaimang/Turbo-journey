@@ -263,7 +263,6 @@ int main(int argc,char* argv[]) {
                 cbuf[i][0] = 'F';
                 cbuf[i][1] = 0;
                 write(cfd[i][1],cbuf,101);
-				//maybe need to get response?
             }
             break;
         }
