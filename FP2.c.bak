@@ -166,6 +166,31 @@ void scheduleAll() {
 		reschedule(now);
 	}
 }
+
+void print(int begin,int end) {
+	FILE *out;
+	out=fopen("Schedule_MINE.txt","w");
+	fputs("*** Project Meeting ***",out);
+	fputs("",out);
+	fputs("Algorithm used: MINE",out);
+	fprintf(out,"PeriodL %s to %s\n",);
+	//how to use toDate?
+	fputs("",out);
+	fputs("Date          Start   End     Team     Project\n",out);
+	fputs("===========================================================================",out);
+	int i;
+	for(i=0;i<eventCnt;++i) {
+		fprintf(out,"%13s %7s %7s %8s %s",);
+		//same
+		
+	}
+	char send[]="P$";
+	for(i=1;i<8;++i) {
+		WRITE(i);
+		READ(i);
+	}
+}
+
 int fd[10][2][2];
 
 int main() {
@@ -178,19 +203,23 @@ int main() {
 	}
 	for(i=0;i<8;++i) {
 		retpid=fork();
-		if(retpid==0) break;
+		if(retpid==0) {
+			//for child
+			break;
+		}
+	}
+	//for parent
+	while(1) {
+		
+		
+		
+		
 	}
 	
 	
-	// for testing
-	eventCnt=10;
-	sortEventArr();
 	
-
-
-	for(i=0; i<eventCnt; i++){
-		printf("%d ", sortedEventArr[i]);
-	}
-	printf("\n");
+	
+	
+	exit(0);
 
 }

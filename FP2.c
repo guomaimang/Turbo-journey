@@ -192,7 +192,7 @@ void print(int begin,int end) {
 }
 
 int fd[10][2][2];
-
+int FF[2][2];
 int main() {
 	//open pipe & fork
 	int i,retpid;
@@ -201,21 +201,39 @@ int main() {
 			exit(1);
 		}
 	}
+	//how to get FF[][]?
 	for(i=0;i<8;++i) {
 		retpid=fork();
-		if(retpid==0) break;
+		if(retpid==0) {
+			//for child
+			break;
+		}
 	}
-	
-	
-	// for testing
-	eventCnt=10;
-	sortEventArr();
-	
-
-
-	for(i=0; i<eventCnt; i++){
-		printf("%d ", sortedEventArr[i]);
+	//for parent
+	char rcv1[80],send1[]="O$";
+	while(1) {
+		read(FF[0][0],rcv1,80);
+		switch(rcv1[0]) {
+			case 'F': //end
+				write(FF[1][1],send1,2);
+				exit(0);
+				break;
+			case 'E': //event
+				event tmp=ins2event(rcv1);
+				eventArr[tmp.index]=tmp;
+				write(FF[1][1],send1,2);
+				break;
+			case 'G': //group
+				team tmp=ins2team(rcv1);
+				teamArr[tmp.index]=tmp;
+				write(FF[1][1],send1,2);
+				break;
+			case 'P': //print
+				scheduleAll();
+				print();//from ? to?
+				write(FF[1][1],send1,2);
+				break;
+		}
 	}
-	printf("\n");
-
+	exit(0);
 }
