@@ -91,8 +91,7 @@ void sortEventArr() {
 					}else{
 						storage[j+1]=storage[j];
 					}
-				}
-				else{
+				}else{
 					storage[j+1]=storage[j];
 				}
         }
