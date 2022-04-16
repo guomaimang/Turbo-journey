@@ -1,6 +1,6 @@
 typedef struct childInputType{
-    int f2c[2];
-    int c2f[2];
+    int *f2c;
+    int *c2f;
 }childInput;
 
 

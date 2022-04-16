@@ -3,6 +3,7 @@
 #include <unistd.h>
 #include <string.h>
 #include <sys/types.h>
+#include <sys/wait.h>
 #include "util.h"
 //1
 //Team Pro Eva Fanny Gray Billy
@@ -76,10 +77,6 @@ char* team2str(char sig,team t,char str[100]){
     sprintf(str,"%c$2$%d$%s$%s$%d$%d$%d$%d$%d",sig,t.index,t.name,t.project,t.manager,t.memberCount,t.member[0],t.member[1],t.member[2]);
     return str;
 }
-char* event2str(char sig,event e,char str[100]){
-    sprintf(str,"%c$3$%d$%d$%d$%d$%d$%s$%s",sig,e.index,e.teamID,e.holdDay,e.startTime,e.endTime,e.name,e.project);
-    return str;
-}
 
 int member_id(char *name, person person_list[9]) {
     for (int i = 0; i < 9; i++) {
@@ -147,18 +144,16 @@ int menu() {
     return re;
 }
 
-event eventArr[200]={};
-team teamArr[6]={};
-person personArr[9]={
-		{0,"Alan",-1,0},
-		{1,"Billy",-1,0},
-		{2,"Cathy",-1,0},
-		{3,"David",-1,0},
-		{4,"Eva",-1,0},
-		{5,"Fanny",-1,0},
-		{6,"Gray",-1,0},
-		{7,"Helen",-1,0}
-};
+// person personArr[9]={
+//		{0,"Alan",-1,0},
+//		{1,"Billy",-1,0},
+//		{2,"Cathy",-1,0},
+//		{3,"David",-1,0},
+//		{4,"Eva",-1,0},
+//		{5,"Fanny",-1,0},
+//		{6,"Gray",-1,0},
+//		{7,"Helen",-1,0}
+// };
 int main(int argc, char *argv[]) {
     int next_meeting = 0, next_team = 0, pid;
     int fd[2][2];
@@ -198,14 +193,14 @@ int main(int argc, char *argv[]) {
                     printf("Enter > ");
                     getchar();
 //                    fgets(user_input_buf,100,stdin);
-                    gets(user_input_buf);
+                    gets_s(user_input_buf);
                     printf("Input is: %s\n", user_input_buf);
                     while ((user_input_buf[0] - '0') != 0) {
 
                         team temp = create_team(user_input_buf, personArr);
                         printf("Enter > ");
 //                    fgets(user_input_buf,100,stdin);
-                        gets(user_input_buf);
+                        gets_s(user_input_buf);
                         print_team(temp, personArr, personArr);
                         if (next_team >= 5) {
                             printf("Already 5 teams");
@@ -241,7 +236,7 @@ int main(int argc, char *argv[]) {
                         printf("Enter > ");
                         getchar();
 //                    fgets(user_input_buf,100,stdin);
-                        gets(user_input_buf);
+                        gets_s(user_input_buf);
                         printf("Input is: %s\n", user_input_buf);
                         if (strncmp(user_input_buf, "Team_", 5) == 0) {
                             temp = str2event(user_input_buf, teamArr);
@@ -263,7 +258,7 @@ int main(int argc, char *argv[]) {
                         }
                         while (!feof(f)) {
 //                    fgets(user_input_buf,100,stdin);
-                            gets(user_input_buf);
+                            gets_s(user_input_buf);
                             if (strncmp(user_input_buf, "Team_", 5) == 0) {
                                 temp = str2event(user_input_buf, teamArr);
                                 if (temp.holdDay != -1) {
@@ -277,7 +272,7 @@ int main(int argc, char *argv[]) {
                 case 3 :
                     getchar();
 //                    fgets(user_input_buf,100,stdin);
-                    gets(user_input_buf);
+                    gets_s(user_input_buf);
                     //                对用户输入进行转义，之后进行输出
                     //                do part 3
                     if (strncmp(user_input_buf, "FCFS", 4) == 0) {

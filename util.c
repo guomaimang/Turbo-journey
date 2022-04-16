@@ -1,6 +1,8 @@
 #include <stdio.h>
+#include <string.h>
 #include <unistd.h>
 #include "util.h"
+
 char toDate[18][11] = {
     "2022-04-25",   
     "2022-04-26",   
@@ -45,6 +47,22 @@ person personArr[9] =
     {6, "Gary", -1, 0},
     {7, "Helen", -1, 0},
 };
+event eventArr[200]={};
+team teamArr[6]={};
+
+char* event2str(char sig,event e,char str[100]){
+    sprintf(str,"%c$3$%d$%d$%d$%d$%d$%s$%s",sig,e.index,e.teamID,e.holdDay,e.startTime,e.endTime,e.name,e.project);
+    return str;
+}
+
+int gets_s(char* str){
+    fgets(str, 100, stdin);
+    int ret = strlen(str);
+    if(str[ret-1] == '\n'){
+        str[--ret]=0;
+    }
+    return ret;
+}
 
 int trySchedule(event *e, int wfd[8][2], int rfd[8][2]){
     char buf[BUF] = "";

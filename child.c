@@ -65,7 +65,8 @@ int FCFSChild(childInput *input){
                     sprintf(buf2 + strlen(buf2), "$%d", ss[i]);
                 write(input->c2f[1], buf2, BUF);
             }
-            read(input->f2c[0], buf, BUF);
+            readsize = read(input->f2c[0], buf, BUF);
+            buf[readsize] = 0;
             if(buf[0] == 'A'){
                 
                 for(i = eventArr[idx].startTime; i <eventArr[idx].endTime; ++i){

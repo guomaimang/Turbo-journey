@@ -4,6 +4,7 @@
 #include <string.h>
 #include <sys/wait.h>
 #include "util.h"
+#include "child.h"
 
 
 void fillString(char* output, int index, const char buf[101]){
@@ -35,9 +36,9 @@ void fillString(char* output, int index, const char buf[101]){
 
 }
 
-void event2str(char sig, event e, char str[101]){
-    sprintf(str,"%c$3$%d$%d$%d$%d$%d$%s$%s",sig,e.index,e.teamID,e.holdDay,e.startTime,e.endTime,e.name,e.project);
-}
+// void event2str(char sig, event e, char str[101]){
+//    sprintf(str,"%c$3$%d$%d$%d$%d$%d$%s$%s",sig,e.index,e.teamID,e.holdDay,e.startTime,e.endTime,e.name,e.project);
+//}
 
 int modTime(int mod, event* targetEvent){
     // mod: from 0 to 37
@@ -61,8 +62,9 @@ int modTime(int mod, event* targetEvent){
     }
 }
 
-int main(int argc,char* argv[]) {
-
+//int main(int argc,char* argv[]) {
+int F1main(int GPfd[2][2], int Ffd[2][2]) {
+/*
 // ------从FF得到 FF -> F 和 F -> FF 的管道，代码整合后将删除------
     int GPfd[2][2];  // pipe 1 for F1, pipe 2 for F2, FF -> F
     char GPbuf[2][101];
@@ -72,6 +74,9 @@ int main(int argc,char* argv[]) {
     if (pipe(GPfd[0]) < 0 || pipe(GPfd[1]) < 0 || pipe(Ffd[0]) < 0 || pipe(Ffd[1]) < 0) {
         printf("F1: UNEXPECT ERROR!\n");
     }
+*/
+    char GPbuf[2][101];
+    char Fbuf[2][101];
     close(GPfd[0][1]);
     close(GPfd[1][1]);
     close(Ffd[0][0]);
@@ -113,6 +118,8 @@ int main(int argc,char* argv[]) {
         } else if (pid == 0) {
             int childId = i; // from 0 to 7
             // Write Cx code
+            childInput input = (childInput){f1fd[i], cfd[i]};
+            FCFSChild(&input);
         }
     }
 /*
@@ -128,12 +135,13 @@ int main(int argc,char* argv[]) {
  */
     while (1) {
         // get message from FF
-        sleep(1);
+       // sleep(1);
         int np;
         np = read(GPfd[0][0], GPbuf[0], 101);
         if (np <= 0) {
             continue;
         } // no message
+        GPbuf[0][np] = 0;
         char signal = GPbuf[0][0];
 
         // FF pass F1 a new team/group
@@ -303,19 +311,18 @@ int main(int argc,char* argv[]) {
             }
             break;
         }
-
+    }
 
 // close all pipe in the end
-        for (int i = 0; i < 8; ++i) {
-            close(f1fd[i][1]);
-            close(cfd[i][0]);
-        }
+    for (int i = 0; i < 8; ++i) {
+        close(f1fd[i][1]);
+        close(cfd[i][0]);
+    }
 
 // wait for all children
-        for (int i = 0; i < 8; ++i) {
-            wait(NULL);
-        }
-
-        return 0;
+    for (int i = 0; i < 8; ++i) {
+        wait(NULL);
     }
+
+    return 0;
 }
