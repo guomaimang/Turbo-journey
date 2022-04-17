@@ -6,4 +6,3 @@ typedef struct childInputType{
 
 int FCFSChild(childInput *input);
 
-extern int myCalandar[20][10];

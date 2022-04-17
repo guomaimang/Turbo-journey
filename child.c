@@ -6,7 +6,6 @@
 #include "util.h"
 
 
-int myCalandar[20][10];
 int hasmeeting[200];
 
 

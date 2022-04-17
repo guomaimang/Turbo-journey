@@ -49,6 +49,7 @@ person personArr[9] =
 };
 event eventArr[200]={};
 team teamArr[6]={};
+int myCalandar[20][10];
 
 int gets_s(char* str){
     fgets(str, 100, stdin);
