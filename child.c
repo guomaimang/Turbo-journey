@@ -41,9 +41,9 @@ int FCFSChild(childInput *input){
             int ret[idx];
             memset(ret, 0, sizeof(ret));
             for(i = eventArr[idx].startTime; i <eventArr[idx].endTime; ++i){
-                if(myCalandar[nowday][i-9] != 0){
+                if(myCalendar[nowday][i-9] != 0){
                     success = 0; 
-                    ret[myCalandar[nowday][i-9]] = 1;
+                    ret[myCalendar[nowday][i-9]] = 1;
                 }
             }
             char buf2[BUF] = "";
@@ -69,15 +69,15 @@ int FCFSChild(childInput *input){
             if(buf[0] == 'A'){
                 
                 for(i = eventArr[idx].startTime; i <eventArr[idx].endTime; ++i){
-                    int nowevent = myCalandar[nowday][i-9]; 
+                    int nowevent = myCalendar[nowday][i-9]; 
                     if(nowevent != 0){
                         int j;
                         for(j=0; j<9; ++j)
-                            if(nowevent == myCalandar[nowday][j])
-                                myCalandar[nowday][j] = 0;
+                            if(nowevent == myCalendar[nowday][j])
+                                myCalendar[nowday][j] = 0;
                         hasmeeting[nowevent] = 0;
                     }
-                    myCalandar[nowday][i-9] = idx;
+                    myCalendar[nowday][i-9] = idx;
                 }
                 hasmeeting[idx] = 1;
             }else if(buf[0] == 'C'){
@@ -121,8 +121,8 @@ int FCFSChild(childInput *input){
             for(i = xx; i <= yy; ++i){
                int j;
                for(j = 0; j < 9; ++j){
-                    if(myCalandar[i][j] > 0 && !vis[myCalandar[i][j]]){
-                        vis[myCalandar[i][j]] = 1;
+                    if(myCalendar[i][j] > 0 && !vis[myCalendar[i][j]]){
+                        vis[myCalendar[i][j]] = 1;
                         ++anss;
                     }
                }
