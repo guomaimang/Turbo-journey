@@ -178,7 +178,7 @@ int main(int argc, char *argv[]) {
             printf("fork failed");
         } else if (pid == 0) {
             if(i == 0){
-                F1main(fda, fd);
+                F1main(fd, fda);
             }
             break;
         }
@@ -186,8 +186,8 @@ int main(int argc, char *argv[]) {
 
     if(pid!=0) {
         for (i=0;i<NUM_ALG;i++) {
-            close(fd[i][1]);
-            close(fda[i][0]);
+            close(fd[i][0]);
+            close(fda[i][1]);
         }
 
         char buf[BUF];
