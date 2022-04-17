@@ -156,6 +156,35 @@ int menu() {
 //		{7,"Helen",-1,0}
 // };
 
+int getPrintCommand(char* user_input, char* pipeDt){
+    static char s1[10], s2[20], s3[20];
+    sscanf(user_input, "%s %s %s", s1, s2, s3);
+    int y1, m1, d1, y2, m2, d2;
+    sscanf(s2, "%d-%d-%d", &y1, &m1, &d1);
+    int date1 = 0;
+    if(m1 == 4)
+        date1 = d1-25;
+    else if(m1==5)
+        date1 = d1+5;
+    sscanf(s3, "%d-%d-%d", &y2, &m2, &d2);
+    int date2 = 0;
+    if(m2 == 4)
+        date2 = d2-25;
+    else if(m2==5)
+        date2 = d2+5;
+    sprintf(pipeDt, "p$%d$%d$", date1, date2);
+    if (strncmp(s1, "FCFS", 4) == 0) {
+        return 1;
+    } else if (strncmp(s2, "XXXX", 4) == 0) {
+        return 2;
+    } else if (strncmp(s3, "YYYY", 4) == 0) {
+        return 3;
+    } else {
+
+    }
+    return 0; 
+}
+
 #define NUM_ALG 1
 int main(int argc, char *argv[]) {
     int next_meeting = 0, next_team = 0, pid;
@@ -278,17 +307,15 @@ int main(int argc, char *argv[]) {
                     getchar();
 //                    fgets(user_input_buf,100,stdin);
                     gets_s(user_input_buf);
+                    int c = getPrintCommand(user_input_buf, buf);
+                    if(c == 1){
+                        write(fd[0][1], buf, BUF);
+                        read(fda[0][0], buf, BUF);
+                    }else if(c == 2){
+                    }else if(c == 3){                    
+                    }
                     //                对用户输入进行转义，之后进行输出
                     //                do part 3
-                    if (strncmp(user_input_buf, "FCFS", 4) == 0) {
-
-                    } else if (strncmp(user_input_buf, "XXXX", 4) == 0) {
-
-                    } else if (strncmp(user_input_buf, "YYYY", 4) == 0) {
-
-                    } else {
-
-                    }
                     printf("%s", user_input_buf);
                     break;
                 case 4:
