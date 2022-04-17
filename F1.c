@@ -225,166 +225,168 @@ int F1main(int GPfd[2][2], int Ffd[2][2]) {
             if (infd < 0) {
                 printf("Error in opening input file\n");
                 exit(1);
+            }
 
-                // get start date and end date
-                char tempStr0[101];
-                int dayStart, dayEnd;
-                fillString(tempStr0, 1, GPbuf[0]);
-                dayStart = atoi(tempStr0);
-                fillString(tempStr0, 2, GPbuf[0]);
-                dayEnd = atoi(tempStr0);
+            // get start date and end date
+            char tempStr0[101];
+            int dayStart, dayEnd;
+            fillString(tempStr0, 1, GPbuf[0]);
+            dayStart = atoi(tempStr0);
+            fillString(tempStr0, 2, GPbuf[0]);
+            dayEnd = atoi(tempStr0);
 
-                // log if event is successfully arranged
-                int eventSuccess[eventUsage];
-                for (i = 0; i < eventUsage; ++i) {
-                    eventSuccess[i] = 0;
-                }
+            // log if event is successfully arranged
+            int eventSuccess[eventUsage];
+            for (i = 0; i < eventUsage; ++i) {
+                eventSuccess[i] = 0;
+            }
 
-                // schedule each event i
-                for (i = 0; i < eventUsage; ++i) {
-                    int mod = 0;    // modify times, 0 to 37 -> -18 to +18
+            // schedule each event i
+            for (i = 0; i < eventUsage; ++i) {
+                int mod = 0;    // modify times, 0 to 37 -> -18 to +18
 
-                    while (mod < 37) {
-                        int arrangement = 1;
-                        char message[101];
-                        int memberCount = teamArr[eventArr[i].teamID].memberCount;
+                while (mod < 37) {
+                    int arrangement = 1;
+                    char message[101];
+                    int memberCount = teamArr[eventArr[i].teamID].memberCount;
 
-                        // for each child index c
-                        for (j = 0; j < memberCount; ++j) {
-                            int c = teamArr[eventArr[i].teamID].member[j];
-                            // 1. tell child c to try
-                            event2str('E', eventArr[i], message);
-                            strcpy(f1buf[c], message);
-                            write(f1fd[c][1], f1buf[c], 101);
-                            // 2. listen child c's feedback
-                            while (1) {
-                                sleep(1);
-                                np = read(cfd[c][0], cbuf[c], 101);
-                                if (np <= 0) {
-                                    continue;
-                                }
-                                if (cbuf[j][0] == 'N') {
-                                    arrangement = 0;
-                                    break;
-                                } else if (cbuf[j][0] == 'Y') {
-                                    break;
-                                }
-                            }
-                        }
-
-                        // 3. if all feedbacks say available, tell child do and break this while
-                        if (arrangement == 1) {
-                            // for each child index c
-                            for (j = 0; j < memberCount; ++j) {
-                                int c = teamArr[eventArr[i].teamID].member[j];
-                                // 1. tell child c to add
-                                write(f1fd[c][1], f1buf[c], 101);
-                                // 2. wait ack from C
-                                while (1) {
-                                    np = read(cfd[c][0], cbuf[c], 101);
-                                    if (np <= 0) {
-                                        continue;
-                                    }
-                                    if (cbuf[c][0] == 'D') {
-                                        break;
-                                    }
-                                }
-                            }
-                            eventSuccess[i] = 1;
-                            myCalendar[eventArr[i].holdDay][eventArr[i].startTime] = i;
-                            break;
-                        } else {
-                            // 4. if anyone feedback says unavailable or time illegal, modify time and jump to 1
+                    // for each child index c
+                    for (j = 0; j < memberCount; ++j) {
+                        int c = teamArr[eventArr[i].teamID].member[j];
+                        // 1. tell child c to try
+                        event2str('E', eventArr[i], message);
+                        strcpy(f1buf[c], message);
+                        write(f1fd[c][1], f1buf[c], 101);
+                        // 2. listen child c's feedback
+                        while (1) {
                             sleep(1);
-                            event *eventPtr = &eventArr[i];
-                            int modOutcome = modTime(++mod, eventPtr);
-                            if (modOutcome == 1 || mod > 37) {
+                            np = read(cfd[c][0], cbuf[c], 101);
+                            if (np <= 0) {
+                                continue;
+                            }
+                            if (cbuf[j][0] == 'N') {
+                                arrangement = 0;
+                                break;
+                            } else if (cbuf[j][0] == 'Y') {
                                 break;
                             }
                         }
                     }
-                }
 
-                // after scheduling, print all event
-                sprintf(inbuf, "*** Project Meeting ***\n");
-                write(infd, inbuf, 101);
-                sprintf(inbuf, "\nAlgorithm used: FCFS\n");
-                write(infd, inbuf, 101);
-                sprintf(inbuf, "Period: %s to %s\n", toDate[dayStart], toDate[dayEnd]);
-                write(infd, inbuf, 101);
-                sprintf(inbuf, "\nDate          Start    End      Team          Project   \n");
-                write(infd, inbuf, 101);
-                sprintf(inbuf, "========================================================\n");
-                write(infd, inbuf, 101);
-                for (i = 0; i < 18; ++i) {
-                    for (j = 0; j < 9; ++j) {
-                        int eventIndex = myCalendar[i][j];
-                        if (eventIndex == -1) {
-                            continue;
+                    // 3. if all feedbacks say available, tell child do and break this while
+                    if (arrangement == 1) {
+                        // for each child index c
+                        for (j = 0; j < memberCount; ++j) {
+                            int c = teamArr[eventArr[i].teamID].member[j];
+                            // 1. tell child c to add
+                            write(f1fd[c][1], f1buf[c], 101);
+                            // 2. wait ack from C
+                            while (1) {
+                                np = read(cfd[c][0], cbuf[c], 101);
+                                if (np <= 0) {
+                                    continue;
+                                }
+                                if (cbuf[c][0] == 'D') {
+                                    break;
+                                }
+                            }
                         }
-                        sprintf(inbuf, "%s    %s    %s    %s    %s\n", toDate[eventArr[eventIndex].holdDay],
-                                toTime[eventArr[eventIndex].startTime],
-                                toTime[eventArr[eventIndex].endTime],
-                                teamArr[eventArr[eventIndex].teamID].name,
-                                teamArr[eventArr[eventIndex].teamID].project);
-                        write(infd, inbuf, 101);
-                    }
-
-                }
-                sprintf(inbuf, "========================================================\n");
-                write(infd, inbuf, 101);
-
-                // count rejected events
-                int rejectCount;
-                for (i = 0; i < eventUsage; ++i) {
-                    if (eventSuccess[i] == 0) {
-                        rejectCount++;
-                    }
-                }
-                sprintf(inbuf, "*** Meeting Request–REJECTED ***\n");
-                write(infd, inbuf, 101);
-                sprintf(inbuf, "\nThere are %d requests rejected for the required period.\n\n", rejectCount);
-                write(infd, inbuf, 101);
-                int rowNum = 0;
-                for (i = 0; i < eventUsage; ++i) {
-                    if (eventSuccess[i] == 0) {
-                        printf("%d\t%s\t%s\t%s\t%d\n", ++rowNum,
-                               eventArr[i].name,
-                               toDate[eventArr[i].holdDay],
-                               toTime[eventArr[i].startTime],
-                               eventArr[i].endTime - eventArr[i].startTime);
-                        write(infd, inbuf, 101);
-                    }
-
-                }
-                printf("========================================================\n");
-                write(infd, inbuf, 101);
-
-                // tell all child to print
-                for (i = 0; i < 8; ++i) {
-                    sprintf(cbuf[i], "%d$%d$%d", infd, dayStart, dayEnd);
-                    write(f1fd[i][1], f1fd[i], 101);
-                    while (1) {
-                        // wait ack from C
-                        np = read(cfd[i][0], cbuf[i], 101);
-                        if (np <= 0) {
-                            continue;
-                        }
-                        if (cbuf[i][0] == 'D') {
+                        eventSuccess[i] = 1;
+                        myCalendar[eventArr[i].holdDay][eventArr[i].startTime] = i;
+                        break;
+                    } else {
+                        // 4. if anyone feedback says unavailable or time illegal, modify time and jump to 1
+                        sleep(1);
+                        event *eventPtr = &eventArr[i];
+                        int modOutcome = modTime(++mod, eventPtr);
+                        if (modOutcome == 1 || mod > 37) {
                             break;
                         }
                     }
                 }
             }
-            // End: Tell every child to end process
-            if (signal == 'F') {
-                for (i = 0; i < 8; ++i) {
-                    cbuf[i][0] = 'F';
-                    cbuf[i][1] = 0;
-                    write(cfd[i][1], cbuf, 101);
+
+            // after scheduling, print all event
+            sprintf(inbuf, "*** Project Meeting ***\n");
+            write(infd, inbuf, 101);
+            sprintf(inbuf, "\nAlgorithm used: FCFS\n");
+            write(infd, inbuf, 101);
+            sprintf(inbuf, "Period: %s to %s\n", toDate[dayStart], toDate[dayEnd]);
+            write(infd, inbuf, 101);
+            sprintf(inbuf, "\nDate          Start    End      Team          Project   \n");
+            write(infd, inbuf, 101);
+            sprintf(inbuf, "========================================================\n");
+            write(infd, inbuf, 101);
+            for (i = 0; i < 18; ++i) {
+                for (j = 0; j < 9; ++j) {
+                    int eventIndex = myCalendar[i][j];
+                    if (eventIndex == -1) {
+                        continue;
+                    }
+                    sprintf(inbuf, "%s    %s    %s    %s    %s\n", toDate[eventArr[eventIndex].holdDay],
+                            toTime[eventArr[eventIndex].startTime],
+                            toTime[eventArr[eventIndex].endTime],
+                            teamArr[eventArr[eventIndex].teamID].name,
+                            teamArr[eventArr[eventIndex].teamID].project);
+                    write(infd, inbuf, 101);
                 }
-                break;
+
             }
+            sprintf(inbuf, "========================================================\n");
+            write(infd, inbuf, 101);
+
+            // count rejected events
+            int rejectCount;
+            for (i = 0; i < eventUsage; ++i) {
+                if (eventSuccess[i] == 0) {
+                    rejectCount++;
+                }
+            }
+            sprintf(inbuf, "*** Meeting Request–REJECTED ***\n");
+            write(infd, inbuf, 101);
+            sprintf(inbuf, "\nThere are %d requests rejected for the required period.\n\n", rejectCount);
+            write(infd, inbuf, 101);
+            int rowNum = 0;
+            for (i = 0; i < eventUsage; ++i) {
+                if (eventSuccess[i] == 0) {
+                    printf("%d\t%s\t%s\t%s\t%d\n", ++rowNum,
+                           eventArr[i].name,
+                           toDate[eventArr[i].holdDay],
+                           toTime[eventArr[i].startTime],
+                           eventArr[i].endTime - eventArr[i].startTime);
+                    write(infd, inbuf, 101);
+                }
+
+            }
+            printf("========================================================\n");
+            write(infd, inbuf, 101);
+
+            // tell all child to print
+            for (i = 0; i < 8; ++i) {
+                sprintf(cbuf[i], "%d$%d$%d", infd, dayStart, dayEnd);
+                write(f1fd[i][1], f1fd[i], 101);
+                while (1) {
+                    // wait ack from C
+                    np = read(cfd[i][0], cbuf[i], 101);
+                    if (np <= 0) {
+                        continue;
+                    }
+                    if (cbuf[i][0] == 'D') {
+                        break;
+                    }
+                }
+            }
+        }
+
+        // End: Tell every child to end process
+        if (signal == 'F') {
+            for (i = 0; i < 8; ++i) {
+                cbuf[i][0] = 'F';
+                cbuf[i][1] = 0;
+                write(cfd[i][1], cbuf, 101);
+            }
+            break;
+        }
         }
 
         // close all pipe in the end
@@ -400,5 +402,5 @@ int F1main(int GPfd[2][2], int Ffd[2][2]) {
 
         return 0;
     }
-}
+
 
