@@ -107,7 +107,7 @@ void sortEventArr() {
 }
 
 // int scheduled[200]={0};
-#define WRITE(i) write(fd[i][0][1],send,80)
+#define WRITE(i) write(fd[i][0][1],send,strlen(send))
 #define READ(i) read(fd[i][1][0],rcv,80)
 int schedule(int eventID) {
 	int teamID=eventArr[eventID].teamID;
@@ -136,7 +136,6 @@ int schedule(int eventID) {
 }
 int unhandled[2][200],tot[2]={0};
 void scheduleAll() {
-	
 	int i;
 	sortEventArr();
 	for(int i=0;i<eventCnt;++i) unhandled[0][tot[0]++]=i;
@@ -189,9 +188,10 @@ void print(int beginDate,int endDate) {
 	int i;
 	for(i=0;i<eventCnt;++i) {
 		event* now=&eventArr[i];
-		fprintf(out,"%13s %7s %7s %8s %s",toDate[now->holdDay],toTime[now->startTime],toTime[now->endTime],teamArr[now->teamID].name,teamArr[now->teamID].project);
+		fprintf(out,"%13s %7s %7s %8s %s",toDate[now->holdDay],toTime[now->startTime-9],toTime[now->endTime-9],teamArr[now->teamID].name,now->project);
 	}
-	char send[]="P$",rcv[10];
+	char send[80],rcv[10];
+	sprintf(send,"P$%d$%d$%d",out->_file,beginDate,endDate);
 	for(i=1;i<8;++i) {
 		WRITE(i);
 		READ(i);
@@ -248,11 +248,12 @@ int F2main(const int ff2f[],const int f2ff[]) {
 			exit(1);
 		}
 	}
-	//how to get FF[][]?
 	for(i=0;i<8;++i) {
 		retpid=fork();
 		if(retpid==0) {
-			//for child
+			int childID=i;
+            childInput input = (childInput){fd[i][0], fd[i][1]};
+            FCFSChild(&input);
 			break;
 		}
 	}
@@ -265,8 +266,7 @@ int F2main(const int ff2f[],const int f2ff[]) {
 		switch(rcv1[0]) {
 			case 'F': //end
 				WRITE;
-				exit(0);
-				break;
+				return 0;
 			case 'E': {//event
 				event tmp=ins2event(rcv1);
 				eventArr[tmp.index]=tmp;
@@ -280,13 +280,19 @@ int F2main(const int ff2f[],const int f2ff[]) {
 				break;
 			}
 			case 'P': //print
+				char* token=strtok(rcv1,"$");
+				token=strtok(NULL,"$");
+				int startDate=atoi(token);
+				token=strtok(NULL,"$");
+				int endDate=atoi(token);
+				while(token!=NULL) token=strtok(NULL,"$");
 				scheduleAll();
-				print();//from ? to?
+				print(startDate,endDate);
 				WRITE;
 				break;
 		}
 	}
 #undef WRITE
 #undef READ
-	exit(0);
+	return 0;
 }
