@@ -5,6 +5,7 @@
 #include <sys/types.h>
 #include <sys/wait.h>
 #include "util.h"
+#include "F1.h"
 //1
 //Team Pro Eva Fanny Gray Billy
 //0
@@ -176,6 +177,9 @@ int main(int argc, char *argv[]) {
         if (pid < 0) {
             printf("fork failed");
         } else if (pid == 0) {
+            if(i == 0){
+                F1main(fda, fd);
+            }
             break;
         }
     }
