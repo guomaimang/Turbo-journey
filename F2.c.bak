@@ -50,6 +50,7 @@ team teamArr[6];
 person personArr[9];
 
 int fd[10][2][2];
+int FF[2][2];
 
 int eventCnt; // event number
 int sortedEventArr[200];  // storing the index
@@ -240,7 +241,7 @@ team ins2team(char ins[]) {
 	return ret;
 }
 
-int F2main(const int ff2f[],const int f2ff[]) {
+int main() {
 	//open pipe & fork
 	int i,retpid;
 	for(i=0;i<8;++i) {
@@ -256,37 +257,33 @@ int F2main(const int ff2f[],const int f2ff[]) {
 			break;
 		}
 	}
-#define WRITE write(f2ff[1],send1,strlen(send1))
-#define READ read(ff2f[0],rcv1,80)
 	//for parent
-	char rcv1[80],send1[]="O";
+	char rcv1[80],send1[]="O$";
 	while(1) {
-		READ;
+		read(FF[0][0],rcv1,80);
 		switch(rcv1[0]) {
 			case 'F': //end
-				WRITE;
+				write(FF[1][1],send1,2);
 				exit(0);
 				break;
 			case 'E': {//event
 				event tmp=ins2event(rcv1);
 				eventArr[tmp.index]=tmp;
-				WRITE;
+				write(FF[1][1],send1,2);
 				break;
 			}
 			case 'G': {//group
 				team tmp=ins2team(rcv1);
 				teamArr[tmp.index]=tmp;
-				WRITE;
+				write(FF[1][1],send1,2);
 				break;
 			}
 			case 'P': //print
 				scheduleAll();
 				print();//from ? to?
-				WRITE;
+				write(FF[1][1],send1,2);
 				break;
 		}
 	}
-#undef WRITE
-#undef READ
 	exit(0);
 }
