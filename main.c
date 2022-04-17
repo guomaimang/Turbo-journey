@@ -154,11 +154,14 @@ int menu() {
 //		{6,"Gray",-1,0},
 //		{7,"Helen",-1,0}
 // };
+
+#define NUM_ALG 1
 int main(int argc, char *argv[]) {
     int next_meeting = 0, next_team = 0, pid;
     int fd[2][2];
     int fda[2][2]; //write to F
-    for (int i=0;i<2;i++){
+    int i;
+    for (i=0;i<NUM_ALG;i++){
         if(pipe(fd[i])<0 || pipe(fda[i])<0) {
 			printf("pipe error\n");
 			exit(1);
@@ -168,8 +171,7 @@ int main(int argc, char *argv[]) {
     int part_num =0;
     char user_input_buf[100] = "1";
 
-    int i;
-    for (i = 0; i < 2 ;i++) {
+    for (i = 0; i < NUM_ALG ;i++) {
         pid = fork();
         if (pid < 0) {
             printf("fork failed");
@@ -179,12 +181,12 @@ int main(int argc, char *argv[]) {
     }
 
     if(pid!=0) {
-        for (i=0;i<2;i++) {
+        for (i=0;i<NUM_ALG;i++) {
             close(fd[i][1]);
             close(fda[i][0]);
         }
 
-        char buf[100];
+        char buf[BUF];
         while (part_num != 4) {
             part_num=menu();
             switch (part_num) {
@@ -210,7 +212,7 @@ int main(int argc, char *argv[]) {
                             printf("Invalid format, Please try again\n");
                             continue;
                         }
-                        for (int i = next_team; i >= 0; i--) {
+                        for (i = next_team; i >= 0; i--) {
                             if (temp.manager == teamArr[i].manager || strcmp(temp.name, teamArr[i].name) == 0) {
                                 printf("Invalid team information, Please try again\n");
                                 continue;
@@ -218,11 +220,9 @@ int main(int argc, char *argv[]) {
                         }
                         personArr[temp.manager].manageTeam = next_team;
                         temp.index=next_team;
-                        write(fd[0][1], team2str('G',temp,buf), strlen(buf));
+                        write(fd[0][1], team2str('G',temp,buf), BUF);
 
-                        while((buf[0]-0)==0){
-                            read(fda[0][0],buf,100);
-                        }
+                        read(fda[0][0],buf,100);
                         strcpy(buf,"");
                         teamArr[next_team] = temp;
                         printf("Team \"%s\" for project \"%s\" is created\n",temp.name,temp.project);
