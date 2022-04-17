@@ -91,6 +91,8 @@ int FCFSChild(childInput *input){
             token = strtok_r(NULL, "$", rem);
             int tfd = 0;
             sscanf(token, "%d", &tfd);
+            int d1, d2;
+            sscanf(*rem, "%d$%d", &d1, &d2);
             dprintf(tfd, "===========================================================================\n");
             dprintf(tfd, "Staff: %s\n", me.name);
             dprintf(tfd, "Date\t\t\tStart\t\tEnd\t\tTeam\t\tProject\n");
@@ -98,7 +100,9 @@ int FCFSChild(childInput *input){
             int i;
             for(i=0; i<200; ++i)
                 if(hasmeeting[i]){
-                    dprintf(tfd, "%s\t\t%s\t\t%s\t%s\t\t%s\n", toDate[eventArr[i].holdDay], toTime[eventArr[i].startTime-9], toTime[eventArr[i].endTime-9], eventArr[i].name, eventArr[i].project);
+                    int dt = eventArr[i].holdDay;
+                    if(dt >= d1 && dt <= d2)
+                        dprintf(tfd, "%s\t\t%s\t\t%s\t%s\t\t%s\n", toDate[dt], toTime[eventArr[i].startTime-9], toTime[eventArr[i].endTime-9], eventArr[i].name, eventArr[i].project);
                 }
              dprintf(tfd, "\n");
             write(input->c2f[1], "D", 1);
