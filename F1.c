@@ -84,7 +84,7 @@ int F1main(int GPfd[2][2], int Ffd[2][2]) {
 // ------------------------------------------------------------
 
 // Init
-    int pid;
+    int pid, i, j;
     int eventUsage = 0;
 
 // create child pipe
@@ -92,7 +92,7 @@ int F1main(int GPfd[2][2], int Ffd[2][2]) {
     char f1buf[8][101];
     int cfd[8][2];      // Cx -> F1
     char cbuf[8][101];
-    for (int i = 0; i < 8; ++i) {
+    for (i = 0; i < 8; ++i) {
         if (pipe(f1fd[i]) < 0 || pipe(cfd[i]) < 8) {
             printf("F1: Pipe creation error!\n");
             exit(1);
@@ -100,7 +100,7 @@ int F1main(int GPfd[2][2], int Ffd[2][2]) {
     }
 
 // close useless pipe
-    for (int i = 0; i < 8; ++i) {
+    for (i = 0; i < 8; ++i) {
         close(f1fd[i][0]);  // close read pip of F1
         close(cfd[i][1]);   // close write pipe of child
     }
@@ -111,7 +111,7 @@ int F1main(int GPfd[2][2], int Ffd[2][2]) {
  * Child Part Start
  * ============================================================
  */
-    for (int i = 0; i < 8; ++i) {
+    for (i = 0; i < 8; ++i) {
         pid = fork();
         if (pid < 0) {
             printf("F1: Fork fail!\n");
@@ -160,7 +160,7 @@ int F1main(int GPfd[2][2], int Ffd[2][2]) {
             fillString(tempStr0, 3, GPbuf[0]);
             teamArr[oneTeam.index].memberCount = atoi(tempStr0);   // get member count
 
-            for (int i = 0; i < teamArr[oneTeam.index].memberCount; ++i) {
+            for (i = 0; i < teamArr[oneTeam.index].memberCount; ++i) {
                 fillString(tempStr0, 4 + i, GPbuf[0]);
                 teamArr[oneTeam.index].member[i] = atoi(tempStr0); // get every member index
             }
@@ -215,12 +215,12 @@ int F1main(int GPfd[2][2], int Ffd[2][2]) {
 
             // log if event is successful
             int eventSuccess[eventUsage];
-            for (int i = 0; i < eventUsage; ++i) {
+            for (i = 0; i < eventUsage; ++i) {
                 eventSuccess[i] = 0;
             }
 
             // schedule event i
-            for (int i = 0; i < eventUsage; ++i) {
+            for (i = 0; i < eventUsage; ++i) {
                 int mod = 0;    // modify times, 0 to 37 -> -18 to +18
 
                 while (mod < 37) {
@@ -229,7 +229,7 @@ int F1main(int GPfd[2][2], int Ffd[2][2]) {
                     int memberCount = teamArr[eventArr[i].teamID].memberCount;
 
                     // for each child index c
-                    for (int j = 0; j < memberCount; ++j) {
+                    for (j = 0; j < memberCount; ++j) {
                         int c = teamArr[eventArr[i].teamID].member[j];
                         // 1. tell child c to try
                         event2str('E', eventArr[i], message);
@@ -254,7 +254,7 @@ int F1main(int GPfd[2][2], int Ffd[2][2]) {
                     // 3. if all feedbacks say available, tell child do and break this while
                     if (arrangement == 1) {
                         // for each child index c
-                        for (int j = 0; j < memberCount; ++j) {
+                        for (j = 0; j < memberCount; ++j) {
                             int c = teamArr[eventArr[i].teamID].member[j];
                             // 1. tell child c to add
                             write(f1fd[c][1], f1buf[c], 101);
@@ -284,7 +284,7 @@ int F1main(int GPfd[2][2], int Ffd[2][2]) {
             }
 
             // after schedule, print all event
-            for (int i = 0; i < 8; ++i) {
+            for (i = 0; i < 8; ++i) {
                 cbuf[i][0] = 'P';
                 cbuf[i][1] = 0;
                 write(cfd[i][1], cbuf, 101);
@@ -304,7 +304,7 @@ int F1main(int GPfd[2][2], int Ffd[2][2]) {
 
         // End: Tell every child to end process
         if (signal == 'F') {
-            for (int i = 0; i < 8; ++i) {
+            for (i = 0; i < 8; ++i) {
                 cbuf[i][0] = 'F';
                 cbuf[i][1] = 0;
                 write(cfd[i][1], cbuf, 101);
@@ -314,13 +314,13 @@ int F1main(int GPfd[2][2], int Ffd[2][2]) {
     }
 
 // close all pipe in the end
-    for (int i = 0; i < 8; ++i) {
+    for (i = 0; i < 8; ++i) {
         close(f1fd[i][1]);
         close(cfd[i][0]);
     }
 
 // wait for all children
-    for (int i = 0; i < 8; ++i) {
+    for (i = 0; i < 8; ++i) {
         wait(NULL);
     }
 
