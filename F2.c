@@ -113,7 +113,7 @@ int schedule(int eventID) {
 	int teamID=eventArr[eventID].teamID;
 	int i;
 	char send[80]={0},rcv[10];
-	event2str(ADDEVENT,eventID,send);
+	event2str(ADDEVENT,eventArr[eventID],send);
 	int flag=1;
 	//manager as a member
 	for(i=0;i<teamArr[teamID].memberCount;++i) {
@@ -191,7 +191,7 @@ void print(int beginDate,int endDate) {
 		fprintf(out,"%13s %7s %7s %8s %s",toDate[now->holdDay],toTime[now->startTime-9],toTime[now->endTime-9],teamArr[now->teamID].name,now->project);
 	}
 	char send[80],rcv[10];
-	sprintf(send,"P$%d$%d$%d",out->_file,beginDate,endDate);
+	sprintf(send,"P$%d$%d$%d",out->_fileno,beginDate,endDate);
 	for(i=1;i<8;++i) {
 		WRITE(i);
 		READ(i);
@@ -240,6 +240,7 @@ team ins2team(char ins[]) {
 	return ret;
 }
 
+
 int F2main(const int ff2f[],const int f2ff[]) {
 	//open pipe & fork
 	int i,retpid;
@@ -279,17 +280,18 @@ int F2main(const int ff2f[],const int f2ff[]) {
 				WRITE;
 				break;
 			}
-			case 'P': //print
+			case 'P': {//print
 				char* token=strtok(rcv1,"$");
 				token=strtok(NULL,"$");
-				int startDate=atoi(token);
+				int beginDate=atoi(token);
 				token=strtok(NULL,"$");
 				int endDate=atoi(token);
 				while(token!=NULL) token=strtok(NULL,"$");
 				scheduleAll();
-				print(startDate,endDate);
+				print(beginDate,endDate);
 				WRITE;
 				break;
+			}
 		}
 	}
 #undef WRITE

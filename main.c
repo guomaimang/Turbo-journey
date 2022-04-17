@@ -6,6 +6,7 @@
 #include <sys/wait.h>
 #include "util.h"
 #include "F1.h"
+#include "F2.h"
 //1
 //Team Pro Eva Fanny Gray Billy
 //0
@@ -72,11 +73,6 @@ event str2event(char *str,team team_list[6]) {
 }
 void print_event(event e, person person_list[9]) {
     printf("team: %s\nhold date: %d\n start_time: %d\n Endtime:%d\n", e.name, e.holdDay,e.startTime,e.endTime);
-}
-
-char* team2str(char sig,team t,char str[100]){
-    sprintf(str,"%c$2$%d$%s$%s$%d$%d$%d$%d$%d",sig,t.index,t.name,t.project,t.manager,t.memberCount,t.member[0],t.member[1],t.member[2]);
-    return str;
 }
 
 int member_id(char *name, person person_list[9]) {
