@@ -98,7 +98,7 @@ int FCFSChild(childInput *input){
             int i;
             for(i=0; i<200; ++i)
                 if(hasmeeting[i]){
-                    dprintf(tfd, "%s\t\t\t%s\t\t%s\t\t%s\t\t%s\n", toDate[eventArr[i].holdDay], toTime[eventArr[i].startTime-9], toTime[eventArr[i].endTime-9], eventArr[i].name, eventArr[i].project);
+                    dprintf(tfd, "%s\t\t%s\t\t%s\t%s\t\t%s\n", toDate[eventArr[i].holdDay], toTime[eventArr[i].startTime-9], toTime[eventArr[i].endTime-9], eventArr[i].name, eventArr[i].project);
                 }
              dprintf(tfd, "\n");
             write(input->c2f[1], "D", 1);
