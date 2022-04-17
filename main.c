@@ -168,7 +168,8 @@ int main(int argc, char *argv[]) {
     int part_num =0;
     char user_input_buf[100] = "1";
 
-    for (int i = 0; i < 2 ;i++) {
+    int i;
+    for (i = 0; i < 2 ;i++) {
         pid = fork();
         if (pid < 0) {
             printf("fork failed");
@@ -178,7 +179,7 @@ int main(int argc, char *argv[]) {
     }
 
     if(pid!=0) {
-        for (int i=0;i<2;i++) {
+        for (i=0;i<2;i++) {
             close(fd[i][1]);
             close(fda[i][0]);
         }
