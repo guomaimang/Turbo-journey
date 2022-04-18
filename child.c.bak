@@ -9,7 +9,7 @@
 int hasmeeting[200];
 
 
-int Child(childInput *input){
+int FCFSChild(childInput *input){
     close(input->c2f[0]);
     close(input->f2c[1]);
     char buf[BUF] = ""; 

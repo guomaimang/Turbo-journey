@@ -5,5 +5,5 @@ typedef struct childInputType{
 }childInput;
 
 
-int Child(childInput *input);
+int FCFSChild(childInput *input);
 
