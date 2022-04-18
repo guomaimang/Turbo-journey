@@ -217,9 +217,9 @@ int main(int argc, char *argv[]) {
         }
 
         char buf[BUF];
+        int input_type = 0;
+        part_num=menu(&input_type);
         while (part_num != 4) {
-            int input_type = 0;
-            part_num=menu(&input_type);
             switch (part_num) {
                 case 1 :
                     //                这里应该是一个while循环，直到用户输入“0”之后才结束
@@ -317,6 +317,7 @@ int main(int argc, char *argv[]) {
                         else if(input_type == 3){
                         }
                     }
+                    break;
                 case 3 :
 //                    getchar();
 //                    fgets(user_input_buf,100,stdin);
