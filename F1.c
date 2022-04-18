@@ -334,7 +334,7 @@ int F1main(int GPfd[2][2], int Ffd[2][2]) {
             int rowNum = 0;
             for (i = 0; i < eventUsage; ++i) {
                 if (eventSuccess[i] == 0) {
-                    printf("%d\t%s\t%s\t%s\t%d\n", ++rowNum,
+                    sprintf(inbuf, "%d\t%s\t%s\t%s\t%d\n", ++rowNum,
                            eventArr[i].name,
                            toDate[eventArr[i].holdDay],
                            toTime[eventArr[i].startTime],
@@ -343,7 +343,7 @@ int F1main(int GPfd[2][2], int Ffd[2][2]) {
                 }
 
             }
-            printf("========================================================\n");
+            sprintf(inbuf, "========================================================\n");
             write(infd, inbuf, 101);
 
             // tell all child to print

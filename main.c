@@ -23,17 +23,20 @@ event str2event(char *str,team team_list[6]) {
     strcpy(ans.name,p);
     ans.teamID=-1;
     for(int i =0;i<6;i++){
+        printf("name: %s\n", team_list[i].name);
         if(strcmp(team_list[i].name,ans.name)==0){
             ans.teamID=i;
         }
     }
     if(ans.teamID==-1){
         ans.holdDay=-1;
+//        puts("error 1");
         return ans;
     }
     p = strtok(NULL, " -");
     if (strcmp(p, "2022") != 0) {
         ans.holdDay = -1;
+//        puts("error 2");
         return ans;
     }
     p = strtok(NULL, " -");
@@ -53,12 +56,14 @@ event str2event(char *str,team team_list[6]) {
         ans.holdDay = atoi(p) - 25;
     } else {
         ans.holdDay = -1;
+//        puts("error 3");
         return ans;
     }
     p = strtok(NULL, " -:");
     int start_time=atoi(p);
     if(start_time<9 || start_time>17){
         ans.holdDay = -1;
+//        puts("error 4");
         return ans;
     }else{
         ans.startTime = start_time;
@@ -89,16 +94,16 @@ int member_id(char *name, person person_list[9]) {
 
 int create_team(char* str,person personArr[9], team *ans) {
     char *p = strtok(str, " ");
-    printf("name=%s\n", p);
+//    printf("name=%s\n", p);
     strcpy(ans->name,p);
 
     p = strtok(NULL, " ");
     strcpy(ans->project,p);
-    printf("project=%s\n", p);
+//    printf("project=%s\n", p);
 
     p = strtok(NULL, " ");
     ans->member[0] = ans->manager = member_id(p, personArr);
-    printf("manager=%s\n", p);
+//    printf("manager=%s\n", p);
 
     ans->memberCount = 1;
     int i;
@@ -177,7 +182,7 @@ int getPrintCommand(char* user_input, char* pipeDt){
         date2 = d2-25;
     else if(m2==5)
         date2 = d2+5;
-    sprintf(pipeDt, "p$%d$%d$", date1, date2);
+    sprintf(pipeDt, "P$%d$%d$", date1, date2);
     return 0; 
 }
 
@@ -259,7 +264,7 @@ int main(int argc, char *argv[]) {
 
                         read(fda[0][0],buf,100);
                         strcpy(buf,"");
-                        teamArr[next_team] = temp;
+                        teamArr[next_team++] = temp;
                         printf("Team \"%s\" for project \"%s\" is created\n",temp.name,temp.project);
                //         printf("%s",team2str('A',&temp,buf));
                     }
@@ -321,9 +326,11 @@ int main(int argc, char *argv[]) {
                 case 3 :
 //                    getchar();
 //                    fgets(user_input_buf,100,stdin);
+                    printf("Enter > ");
                     gets_s(user_input_buf);
                     getPrintCommand(user_input_buf, buf);
                     if(input_type == 1){
+                        puts("FF: Start Sending...");
                         write(fd[0][1], buf, BUF);
                         read(fda[0][0], buf, BUF);
                     }else if(input_type == 2){
@@ -331,7 +338,7 @@ int main(int argc, char *argv[]) {
                     }
                     //                对用户输入进行转义，之后进行输出
                     //                do part 3
-                    printf("%s", user_input_buf);
+                    // printf("%s", user_input_buf);
                     break;
                 case 4:
                     write(fd[0][1],"F",strlen("F"));
