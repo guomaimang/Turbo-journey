@@ -254,7 +254,7 @@ int F2main(const int ff2f[],const int f2ff[]) {
 		if(retpid==0) {
 			int childID=i;
             childInput input = (childInput){fd[i][0], fd[i][1]};
-            Child(&input);
+            FCFSChild(&input);
 			break;
 		}
 	}
