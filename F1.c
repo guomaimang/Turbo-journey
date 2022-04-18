@@ -42,27 +42,6 @@ void fillString(char* output, int index, const char buf[101]){
 //    sprintf(str,"%c$3$%d$%d$%d$%d$%d$%s$%s",sig,e.index,e.teamID,e.holdDay,e.startTime,e.endTime,e.name,e.project);
 //}
 
-int modTime(int mod, event* targetEvent){
-    // mod: from 0 to 37
-    // modify time 0 -> 1 -> -1 -> 2 -> -2 ...... -> 18 -> -18 -> 0
-    int addTime = 0;
-    if (0 < mod && mod < 37){
-        addTime = mod/2;
-        if(mod%2 == 0){
-            addTime = 0 - addTime;
-        }
-    }
-    int timeNow = targetEvent -> holdDay * 18 + targetEvent -> startTime;
-    // modify successfully with 1, else 0
-    if (timeNow + addTime > 90){
-        return 0;
-    } else{
-        timeNow = timeNow + addTime;
-        targetEvent -> holdDay = timeNow / 18;
-        targetEvent -> startTime = timeNow / 9;
-        return 1;
-    }
-}
 
 //int main(int argc,char* argv[]) {
 int F1main(int GPfd[2][2], int Ffd[2][2]) {
@@ -241,20 +220,21 @@ int F1main(int GPfd[2][2], int Ffd[2][2]) {
                 eventSuccess[i] = 0;
             }
 
+/*
             // schedule each event i
             for (i = 0; i < eventUsage; ++i) {
                 int mod = 0;    // modify times, 0 to 37 -> -18 to +18
-
+                event now_event = eventArr[i];
                 while (mod < 37) {
                     int arrangement = 1;
                     char message[101];
-                    int memberCount = teamArr[eventArr[i].teamID].memberCount;
+                    int memberCount = teamArr[now_event.teamID].memberCount;
 
                     // for each child index c
                     for (j = 0; j < memberCount; ++j) {
-                        int c = teamArr[eventArr[i].teamID].member[j];
+                        int c = teamArr[now_event.teamID].member[j];
                         // 1. tell child c to try
-                        event2str('E', eventArr[i], message);
+                        event2str('E', now_event, message);
                         strcpy(f1buf[c], message);
                         write(f1fd[c][1], f1buf[c], 101);
                         // 2. listen child c's feedback
@@ -277,7 +257,7 @@ int F1main(int GPfd[2][2], int Ffd[2][2]) {
                     if (arrangement == 1) {
                         // for each child index c
                         for (j = 0; j < memberCount; ++j) {
-                            int c = teamArr[eventArr[i].teamID].member[j];
+                            int c = teamArr[now_event.teamID].member[j];
                             // 1. tell child c to add
                             write(f1fd[c][1], f1buf[c], 101);
                             // 2. wait ack from C
@@ -292,18 +272,23 @@ int F1main(int GPfd[2][2], int Ffd[2][2]) {
                             }
                         }
                         eventSuccess[i] = 1;
-                        myCalendar[eventArr[i].holdDay][eventArr[i].startTime] = i;
+                        myCalendar[now_event.holdDay][eventArr[i].startTime] = i;
                         break;
                     } else {
                         // 4. if anyone feedback says unavailable or time illegal, modify time and jump to 1
                         sleep(1);
-                        event *eventPtr = &eventArr[i];
+                        event *eventPtr = &now_event;
                         int modOutcome = modTime(++mod, eventPtr);
                         if (modOutcome == 1 || mod > 37) {
                             break;
                         }
                     }
                 }
+            }
+*/
+            for(i = 0; i < eventUsage; ++i){
+                if(trySchedule(&eventArr[i], f1fd, cfd) || reschedule(&eventArr[i], f1fd, cfd))
+                    eventSuccess[i] = 1;
             }
 
             // after scheduling, print all event

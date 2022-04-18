@@ -44,5 +44,6 @@ extern int myCalendar[20][10];
 enum {BUF = 255};
 
 extern int trySchedule(event *e, int wfd[8][2], int rfd[8][2]);
+extern int reschedule(event* e, int wfd[8][2], int rfd[8][2]);
 extern char* event2str(char sig,event e,char str[100]);
 extern int gets_s(char* str);

@@ -70,28 +70,79 @@ char* event2str(char sig,event e,char str[]){
     return str;
 }
 
+int reschedule(event* e, int wfd[8][2], int rfd[8][2]){
+    int bias;
+    int day = e->holdDay;
+    int st = e->startTime;
+    int et = e->endTime;
+    int dur = e->endTime - e->startTime;
+    int i;
+    
+    for(i = st + 1; i < 10-dur; ++i){
+        e->startTime = i;
+        e->endTime = i + dur;
+        if (trySchedule(e, wfd, rfd) == 1) {
+            myCalendar[e->holdDay][e->startTime] = e->index;
+            return 1;
+        }
+    }
+    for(i = st - 1; i>=0; --i){
+        e->startTime = i;
+        e->endTime = i + dur;
+        if (trySchedule(e, wfd, rfd) == 1) {
+            myCalendar[e->holdDay][e->startTime] = e->index;
+            return 1;
+        }
+    }
+    for (bias = 1; bias <= 3; ++bias) {
+        e->holdDay = day + bias;
+        for(i=0; i<10-dur; ++i){
+            e->startTime = i;
+            e->endTime = i + dur;
+            if (trySchedule(e, wfd, rfd) == 1) {
+                myCalendar[e->holdDay][e->startTime] = e->index;
+                return 1;
+            }
+        }
+        e->holdDay = day - bias;
+        for(i = 9-dur; i>=0; --i){
+            e->startTime = i;
+            e->endTime = i + dur;
+            if (trySchedule(e, wfd, rfd) == 1) {
+                myCalendar[e->holdDay][e->startTime] = e->index;
+                return 1;
+            }
+        }
+    }
+    return 0;
+}
+
 int trySchedule(event *e, int wfd[8][2], int rfd[8][2]){
     char buf[BUF] = "";
     char buf2[BUF] = "";
     sprintf(buf, "T$3$%d$%d$%d$%d$%d$%s$%s", e->index, e->teamID, e->holdDay, e->startTime, e->endTime, e->name, e->project);
     int i;
     int succ = 1;
-    for(i = 0; i < 8; ++i){
-        write(wfd[i][1], buf, BUF);
-        read(rfd[i][0], buf2, BUF);
+    int memberCount = teamArr[e->teamID].memberCount;
+    for(i = 0; i < memberCount; ++i){
+        int c = teamArr[e->teamID].member[i];
+        write(wfd[c][1], buf, BUF);
+        read(rfd[c][0], buf2, BUF);
         if(buf2[0] == 'Y') continue;
         succ = 0;
         int j;
         for(j=0; j<=i; ++j){
-            write(wfd[i][1], "C", 1);
-            read(rfd[i][0], buf2, BUF);
+            int c2 = teamArr[e->teamID].member[j];
+            write(wfd[c2][1], "C", 1);
+            read(rfd[c2][0], buf2, BUF);
         }
         return 0;
     }
     if(succ){
-        for(i=0; i<8; ++i){
-            write(wfd[i][1], "A", 1);
-            read(rfd[i][0], buf2, BUF);
+        for(i=0; i<memberCount; ++i){
+            int c = teamArr[e->teamID].member[i];
+            write(wfd[c][1], "A", 1);
+            read(rfd[c][0], buf2, BUF);
         }
     }else return -1;
     return 1; 
