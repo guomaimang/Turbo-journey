@@ -231,12 +231,14 @@ int main(int argc, char *argv[]) {
                     gets_s(user_input_buf);
 //                    printf("Input is: %s\n", user_input_buf);
                     while ((user_input_buf[0] - '0') != 0) {
-
                         team temp = create_team(user_input_buf, personArr);
                         printf("Enter > ");
 //                    fgets(user_input_buf,100,stdin);
+                        puts("0");
                         gets_s(user_input_buf);
+                        puts("1");
                         print_team(temp, personArr, personArr);
+                        puts("2");
                         if (next_team >= 5) {
                             printf("Already 5 teams");
                             continue;
@@ -244,12 +246,14 @@ int main(int argc, char *argv[]) {
                             printf("Invalid format, Please try again\n");
                             continue;
                         }
+                        puts("3");
                         for (i = next_team; i >= 0; i--) {
                             if (temp.manager == teamArr[i].manager || strcmp(temp.name, teamArr[i].name) == 0) {
                                 printf("Invalid team information, Please try again\n");
                                 continue;
                             }
                         }
+                        puts("4");
                         personArr[temp.manager].manageTeam = next_team;
                         temp.index=next_team;
                         return 0;

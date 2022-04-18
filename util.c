@@ -55,8 +55,9 @@ int myCalendar[20][10];
 int gets_s(char* str){
 //    fgets(str, 100, stdin);
 	int c,i;
-	for(i=0;(c=getchar())!='\n'&&c!=EOF;++i)
-	   str[i]=c;
+	for(i=0;(c=getchar())!='\n'&&c!=EOF;++i){
+	    str[i]=c;
+    }
 	str[i]=0;
 	return i;
 }
