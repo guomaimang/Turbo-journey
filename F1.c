@@ -79,7 +79,7 @@ int F1main(int GPfd[2][2], int Ffd[2][2]) {
     int cfd[8][2];      // Cx -> F1
     char cbuf[8][101];
     for (i = 0; i < 8; ++i) {
-        if (pipe(f1fd[i]) < 0 || pipe(cfd[i]) < 8) {
+        if (pipe(f1fd[i]) < 0 || pipe(cfd[i]) < 0) {
             printf("F1: Pipe creation error!\n");
             exit(1);
         }

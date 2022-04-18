@@ -1,4 +1,5 @@
 #include <stdio.h>
+#include <stdlib.h>
 #include <string.h>
 #include <unistd.h>
 #include "util.h"
@@ -52,12 +53,12 @@ team teamArr[6]={};
 int myCalendar[20][10];
 
 int gets_s(char* str){
-    fgets(str, 100, stdin);
-    int ret = strlen(str);
-    if(str[ret-1] == '\n'){
-        str[--ret]=0;
-    }
-    return ret;
+//    fgets(str, 100, stdin);
+	int c,i;
+	for(i=0;(c=getchar())!='\n'&&c!=EOF;++i)
+	   str[i]=c;
+	str[i]=0;
+	return i;
 }
 
 char* team2str(char sig,team *t,char str[]){

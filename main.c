@@ -4,6 +4,7 @@
 #include <string.h>
 #include <sys/types.h>
 #include <sys/wait.h>
+#include <sys/prctl.h>
 #include "util.h"
 #include "F1.h"
 #include "F2.h"
@@ -136,7 +137,8 @@ int menu() {
            "\t3c. \tYYYY (Attendance Report) (if implemented)\n\n");
     printf("4. \tExit\n\n"
            "\tEnter an option:");
-    scanf("%s", ans);
+    //scanf("%s", ans);
+    int ret = gets_s(ans);
     int re = ans[0] - '0';
     return re;
 }
@@ -202,10 +204,11 @@ int main(int argc, char *argv[]) {
         if (pid < 0) {
             printf("fork failed");
         } else if (pid == 0) {
+            prctl(PR_SET_PDEATHSIG, SIGKILL);
             if(i == 0){
                 F1main(fd, fda);
             }
-            break;
+            exit(0);
         }
     }
 
@@ -223,10 +226,10 @@ int main(int argc, char *argv[]) {
                     //                这里应该是一个while循环，直到用户输入“0”之后才结束
                     printf("Please input information of the team in the format :\n\"Team_X Project_X Leader_name Member_name_1 Member_name_2 Member_name_3\"\n");
                     printf("Enter > ");
-                    getchar();
+//                    getchar();
 //                    fgets(user_input_buf,100,stdin);
                     gets_s(user_input_buf);
-                    printf("Input is: %s\n", user_input_buf);
+//                    printf("Input is: %s\n", user_input_buf);
                     while ((user_input_buf[0] - '0') != 0) {
 
                         team temp = create_team(user_input_buf, personArr);
@@ -249,6 +252,7 @@ int main(int argc, char *argv[]) {
                         }
                         personArr[temp.manager].manageTeam = next_team;
                         temp.index=next_team;
+                        return 0;
                         write(fd[0][1], team2str('G',&temp,buf), BUF);
 
                         read(fda[0][0],buf,100);
@@ -264,7 +268,7 @@ int main(int argc, char *argv[]) {
                     while ((user_input_buf[0] - '0') != 0) {
                         printf("please input information of the meeting in the format :\n\"Team_X yyyy-mm-dd hh:mm x\"\n");
                         printf("Enter > ");
-                        getchar();
+//                        getchar();
 //                    fgets(user_input_buf,100,stdin);
                         gets_s(user_input_buf);
                         printf("Input is: %s\n", user_input_buf);
@@ -300,7 +304,7 @@ int main(int argc, char *argv[]) {
                         }
                     }
                 case 3 :
-                    getchar();
+//                    getchar();
 //                    fgets(user_input_buf,100,stdin);
                     gets_s(user_input_buf);
                     int c = getPrintCommand(user_input_buf, buf);
