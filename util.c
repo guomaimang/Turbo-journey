@@ -60,13 +60,13 @@ int gets_s(char* str){
     return ret;
 }
 
-char* team2str(char sig,team t,char str[]){
-    sprintf(str,"%c$2$%d$%s$%s$%d$%d$%d$%d$%d",sig,t.index,t.name,t.project,t.manager,t.memberCount,t.member[0],t.member[1],t.member[2]);
+char* team2str(char sig,team *t,char str[]){
+    sprintf(str,"%c$2$%d$%s$%s$%d$%d$%d$%d$%d",sig,t->index,t->name,t->project,t->manager,t->memberCount,t->member[0],t->member[1],t->member[2]);
     return str;
 }
 
-char* event2str(char sig,event e,char str[]){
-    sprintf(str,"%c$3$%d$%d$%d$%d$%d$%s$%s",sig,e.index,e.teamID,e.holdDay,e.startTime,e.endTime,e.name,e.project);
+char* event2str(char sig,event *e,char str[]){
+    sprintf(str,"%c$3$%d$%d$%d$%d$%d$%s$%s",sig,e->index,e->teamID,e->holdDay,e->startTime,e->endTime,e->name,e->project);
     return str;
 }
 

@@ -13,7 +13,7 @@ int FCFSChild(childInput *input){
     close(input->c2f[0]);
     close(input->f2c[1]);
     char buf[BUF] = ""; 
-    person me;
+    person me = personArr[input->id];
 
     while(1){
         int readsize = read(input->f2c[0], buf, BUF); 
@@ -106,13 +106,14 @@ int FCFSChild(childInput *input){
              dprintf(tfd, "\n");
             write(input->c2f[1], "D", 1);
         }
-        else if(token[0] == 'T'){
-            token = strtok_r(NULL, "$", rem);
-            if(token[0] !='1')
-                return -1;
-            sscanf(*rem, "%d$%d$%d$%s", &me.index, &me.manageTeam, &me.asMember, me.name);
-            write(input->c2f[1], "D", 1);
-        }else if(token[0] == 'R'){
+//        else if(token[0] == 'I'){
+//            token = strtok_r(NULL, "$", rem);
+//            if(token[0] !='1')
+//                return -1;
+//            sscanf(*rem, "%d$%d$%d$%s", &me.index, &me.manageTeam, &me.asMember, me.name);
+ //           write(input->c2f[1], "D", 1);
+//        }
+        else if(token[0] == 'R'){
             int xx, yy;
             sscanf(*rem, "%d$%d", &xx, &yy);
             int i;

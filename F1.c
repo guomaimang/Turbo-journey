@@ -104,7 +104,7 @@ int F1main(int GPfd[2][2], int Ffd[2][2]) {
         } else if (pid == 0) {
             int childId = i; // from 0 to 7
             // Write Cx code
-            childInput input = (childInput) {f1fd[i], cfd[i]};
+            childInput input = (childInput) {f1fd[i], cfd[i], childId};
             FCFSChild(&input);
         }
     }

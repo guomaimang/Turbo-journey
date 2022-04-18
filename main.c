@@ -12,10 +12,6 @@
 //0
 //2
 //Team 2002-04-25 09:00 2
-char* team2str(char sig,team *t,char str[100]){
-    sprintf(str,"%c$2$%d$%s$%s$%d$%d$%d$%d$%d",sig,t->index,t->name,t->project,t->manager,t->memberCount,t->member[0],t->member[1],t->member[2]);
-    return str;
-}
 
 event str2event(char *str,team team_list[6]) {
     event ans = {};
@@ -277,7 +273,7 @@ int main(int argc, char *argv[]) {
                             if (temp.holdDay != -1) {
                                 temp.index=next_meeting;
                                 eventArr[next_meeting] = temp;
-                                write(fd[0][1], event2str('E',temp,buf), strlen(buf));
+                                write(fd[0][1], event2str('E',&temp,buf), strlen(buf));
                                 next_meeting++;
                                 print_event(temp, personArr);
                             } else {
