@@ -12,6 +12,10 @@
 //0
 //2
 //Team 2002-04-25 09:00 2
+char* team2str(char sig,team *t,char str[100]){
+    sprintf(str,"%c$2$%d$%s$%s$%d$%d$%d$%d$%d",sig,t->index,t->name,t->project,t->manager,t->memberCount,t->member[0],t->member[1],t->member[2]);
+    return str;
+}
 
 event str2event(char *str,team team_list[6]) {
     event ans = {};
@@ -249,13 +253,13 @@ int main(int argc, char *argv[]) {
                         }
                         personArr[temp.manager].manageTeam = next_team;
                         temp.index=next_team;
-                        write(fd[0][1], team2str('G',temp,buf), BUF);
+                        write(fd[0][1], team2str('G',&temp,buf), BUF);
 
                         read(fda[0][0],buf,100);
                         strcpy(buf,"");
                         teamArr[next_team] = temp;
                         printf("Team \"%s\" for project \"%s\" is created\n",temp.name,temp.project);
-                        printf("%s",team2str('A',temp,buf));
+                        printf("%s",team2str('A',&temp,buf));
                     }
                     break;
                 case 2 :
