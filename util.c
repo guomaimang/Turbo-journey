@@ -52,6 +52,7 @@ event eventArr[200]={};
 team teamArr[6]={};
 int myCalendar[20][10];
 
+
 int gets_s(char str[]){
 //    fgets(str, 100, stdin);
 	int c,i;
