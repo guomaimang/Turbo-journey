@@ -132,6 +132,7 @@ int F1main(int GPfd[2][2], int Ffd[2][2]) {
 
         // FF pass F1 a new team/group
         if (signal == 'G') {
+
             team oneTeam;
             char tempStr0[101];
 
@@ -164,9 +165,13 @@ int F1main(int GPfd[2][2], int Ffd[2][2]) {
 
         // FF pass F1 to a new event
         if (signal == 'E') {
+            int id = 0;
+            /*
             event oneEvent;
+            
             char tempStr0[101];
 
+            
             fillString(tempStr0, 1, GPbuf[0]);
             oneEvent.index = atoi(tempStr0);     // get index
 
@@ -190,6 +195,11 @@ int F1main(int GPfd[2][2], int Ffd[2][2]) {
 
             fillString(tempStr0, 6, GPbuf[0]);
             strcpy(oneEvent.project, tempStr0);
+            */
+            sscanf(GPbuf[0], "E$3$%d", &id);
+            event* e = &eventArr[id];
+            sscanf(GPbuf[0], "E$3$%d$%d$%d$%d$%d$%s$%s",&e->index,&e->teamID,&e->holdDay,&e->startTime,&e->endTime,e->name,e->project);
+            
 
             // response FF ack
             Fbuf[0][0] = 'D';
@@ -207,12 +217,13 @@ int F1main(int GPfd[2][2], int Ffd[2][2]) {
             }
 
             // get start date and end date
-            char tempStr0[101];
+//            char tempStr0[101];
             int dayStart, dayEnd;
-            fillString(tempStr0, 1, GPbuf[0]);
-            dayStart = atoi(tempStr0);
-            fillString(tempStr0, 2, GPbuf[0]);
-            dayEnd = atoi(tempStr0);
+            sscanf(GPbuf[0], "P$%d$%d", &dayStart, &dayEnd);
+//            fillString(tempStr0, 1, GPbuf[0]);
+//            dayStart = atoi(tempStr0);
+//            fillString(tempStr0, 2, GPbuf[0]);
+//            dayEnd = atoi(tempStr0);
 
             // log if event is successfully arranged
             int eventSuccess[eventUsage];
@@ -292,59 +303,68 @@ int F1main(int GPfd[2][2], int Ffd[2][2]) {
             }
 
             // after scheduling, print all event
-            sprintf(inbuf, "*** Project Meeting ***\n");
-            write(infd, inbuf, 101);
-            sprintf(inbuf, "\nAlgorithm used: FCFS\n");
-            write(infd, inbuf, 101);
-            sprintf(inbuf, "Period: %s to %s\n", toDate[dayStart], toDate[dayEnd]);
-            write(infd, inbuf, 101);
-            sprintf(inbuf, "\nDate          Start    End      Team          Project   \n");
-            write(infd, inbuf, 101);
-            sprintf(inbuf, "========================================================\n");
-            write(infd, inbuf, 101);
+            dprintf(infd, "*** Project Meeting ***\n");
+//            sprintf(inbuf, "*** Project Meeting ***\n");
+//            write(infd, inbuf, 101);
+            dprintf(infd, "\nAlgorithm used: FCFS\n");
+//            sprintf(inbuf, "\nAlgorithm used: FCFS\n");
+//            write(infd, inbuf, 101);
+
+//
+            dprintf(infd, "Period: %s to %s\n", toDate[dayStart], toDate[dayEnd]);
+//            sprintf(inbuf, "Period: %s to %s\n", toDate[dayStart], toDate[dayEnd]);
+//            write(infd, inbuf, 101);
+            dprintf(infd, "\nDate\t\t\tStart\t\tEnd\t\tTeam\t\tProject\n");
+//            sprintf(inbuf, "\nDate          Start    End      Team          Project   \n");
+//            write(infd, inbuf, 101);
+            dprintf(infd, "========================================================\n");
+//            sprintf(inbuf, "========================================================\n");
+//            write(infd, inbuf, 101);
             for (i = 0; i < 18; ++i) {
                 for (j = 0; j < 9; ++j) {
                     int eventIndex = myCalendar[i][j];
                     if (eventIndex == -1) {
                         continue;
                     }
-                    sprintf(inbuf, "%s    %s    %s    %s    %s\n", toDate[eventArr[eventIndex].holdDay],
+                    dprintf(infd, "%s\t\t%s\t\t%s\t%s\t\t%s\n", toDate[eventArr[eventIndex].holdDay],
                             toTime[eventArr[eventIndex].startTime],
                             toTime[eventArr[eventIndex].endTime],
                             teamArr[eventArr[eventIndex].teamID].name,
                             teamArr[eventArr[eventIndex].teamID].project);
-                    write(infd, inbuf, 101);
+               //     write(infd, inbuf, 101);
                 }
 
             }
-            sprintf(inbuf, "========================================================\n");
-            write(infd, inbuf, 101);
+            dprintf(infd, "========================================================\n");
+//            write(infd, inbuf, 101);
 
             // count rejected events
-            int rejectCount;
+            int rejectCount = 0;
             for (i = 0; i < eventUsage; ++i) {
                 if (eventSuccess[i] == 0) {
                     rejectCount++;
                 }
             }
-            sprintf(inbuf, "*** Meeting Request–REJECTED ***\n");
-            write(infd, inbuf, 101);
-            sprintf(inbuf, "\nThere are %d requests rejected for the required period.\n\n", rejectCount);
-            write(infd, inbuf, 101);
+
+            dprintf(infd, "*** Meeting Request–REJECTED ***\n");
+//            sprintf(inbuf, "*** Meeting Request–REJECTED ***\n");
+//            write(infd, inbuf, 101);
+            dprintf(infd, "\nThere are %d requests rejected for the required period.\n\n", rejectCount);
+//            write(infd, inbuf, 101);
             int rowNum = 0;
             for (i = 0; i < eventUsage; ++i) {
                 if (eventSuccess[i] == 0) {
-                    sprintf(inbuf, "%d\t%s\t%s\t%s\t%d\n", ++rowNum,
+                    dprintf(infd, "%d\t%s\t%s\t%s\t%d\n", ++rowNum,
                            eventArr[i].name,
                            toDate[eventArr[i].holdDay],
                            toTime[eventArr[i].startTime],
                            eventArr[i].endTime - eventArr[i].startTime);
-                    write(infd, inbuf, 101);
+ //                   write(infd, inbuf, 101);
                 }
 
             }
-            sprintf(inbuf, "========================================================\n");
-            write(infd, inbuf, 101);
+            dprintf(infd, "========================================================\n");
+//            write(infd, inbuf, 101);
 
             // tell all child to print
             for (i = 0; i < 8; ++i) {

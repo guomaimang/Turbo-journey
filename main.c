@@ -23,7 +23,7 @@ event str2event(char *str,team team_list[6]) {
     strcpy(ans.name,p);
     ans.teamID=-1;
     for(int i =0;i<6;i++){
-        printf("name: %s\n", team_list[i].name);
+//        printf("name: %s\n", team_list[i].name);
         if(strcmp(team_list[i].name,ans.name)==0){
             ans.teamID=i;
         }
@@ -90,6 +90,12 @@ int member_id(char *name, person person_list[9]) {
         }
     }
     return -1;
+}
+
+int getDate(int month, int day){
+    static const int d2d[15] = {0, 0, 6, 7, 8, 9, 10, 11, 0, 12, 13, 14, 15, 16, 17};
+    if(month == 4) return day-25;
+    else return d2d[day];
 }
 
 int create_team(char* str,person personArr[9], team *ans) {
@@ -168,6 +174,7 @@ int menu(int *type) {
 
 int getPrintCommand(char* user_input, char* pipeDt){
     static char s1[10], s2[20], s3[20];
+    static const int d2d[15] = {0, 0, 6, 7, 8, 9, 10, 11, 0, 12, 13, 14, 15, 16, 17};
     sscanf(user_input, "%s %s %s", s1, s2, s3);
     int y1, m1, d1, y2, m2, d2;
     sscanf(s2, "%d-%d-%d", &y1, &m1, &d1);
@@ -175,13 +182,13 @@ int getPrintCommand(char* user_input, char* pipeDt){
     if(m1 == 4)
         date1 = d1-25;
     else if(m1==5)
-        date1 = d1+5;
+        date1 = d2d[d1];
     sscanf(s3, "%d-%d-%d", &y2, &m2, &d2);
     int date2 = 0;
     if(m2 == 4)
         date2 = d2-25;
     else if(m2==5)
-        date2 = d2+5;
+        date2 = d2d[d2];
     sprintf(pipeDt, "P$%d$%d$", date1, date2);
     return 0; 
 }
@@ -330,7 +337,7 @@ int main(int argc, char *argv[]) {
                     gets_s(user_input_buf);
                     getPrintCommand(user_input_buf, buf);
                     if(input_type == 1){
-                        puts("FF: Start Sending...");
+                    //    puts("FF: Start Sending...");
                         write(fd[0][1], buf, BUF);
                         read(fda[0][0], buf, BUF);
                     }else if(input_type == 2){
