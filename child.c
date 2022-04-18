@@ -97,13 +97,18 @@ int Child(childInput *input){
             dprintf(tfd, "Date\t\t\tStart\t\tEnd\t\tTeam\t\tProject\n");
             dprintf(tfd, "===========================================================================\n");
             int i;
-            for(i=0; i<200; ++i)
-                if(hasmeeting[i]){
-                    int dt = eventArr[i].holdDay;
-                    if(dt >= d1 && dt <= d2)
-                        dprintf(tfd, "%s\t\t%s\t\t%s\t%s\t\t%s\n", toDate[dt], toTime[eventArr[i].startTime-9], toTime[eventArr[i].endTime-9], eventArr[i].name, eventArr[i].project);
-                }
-             dprintf(tfd, "\n");
+            int vis[200] = {0};
+            for(i = d1; i <= d2; ++i){
+               int j;
+               for(j = 0; j < 9; ++j){
+                   int idx = myCalendar[i][j];
+                    if(idx > 0 && !vis[idx]){
+                        vis[idx] = 1;
+                        dprintf(tfd, "%s\t\t%s\t\t%s\t%s\t\t%s\n", toDate[i], toTime[eventArr[idx].startTime-9], toTime[eventArr[idx].endTime-9], eventArr[idx].name, eventArr[idx].project);
+                    }
+               }
+            }
+            dprintf(tfd, "\n");
             write(input->c2f[1], "D", 1);
         }
 //        else if(token[0] == 'I'){
