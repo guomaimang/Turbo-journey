@@ -5,6 +5,8 @@
 #include <sys/types.h>
 #include <sys/wait.h>
 #include <sys/prctl.h>
+#include <fcntl.h>
+#include <sys/stat.h>
 #include "util.h"
 #include "F1.h"
 #include "F2.h"
@@ -123,7 +125,7 @@ void print_team(team *t, person person_list[9],person personArr[9]) {
 
 }
 
-int menu() {
+int menu(int *type) {
     char ans[5];
     printf("\n\n~~ WELCOME TO PolyStar ~~\n\n");
     printf("1. \tCreate Project Team\n\n");
@@ -138,8 +140,13 @@ int menu() {
     printf("4. \tExit\n\n"
            "\tEnter an option:");
     //scanf("%s", ans);
-    int ret = gets_s(ans);
+    gets_s(ans);
     int re = ans[0] - '0';
+    if(re == 2 || re == 3){
+        if(strlen(ans) != 2)
+            return -1;
+        *type = ans[1] - 'a' + 1;
+    }
     return re;
 }
 
@@ -171,15 +178,6 @@ int getPrintCommand(char* user_input, char* pipeDt){
     else if(m2==5)
         date2 = d2+5;
     sprintf(pipeDt, "p$%d$%d$", date1, date2);
-    if (strncmp(s1, "FCFS", 4) == 0) {
-        return 1;
-    } else if (strncmp(s2, "XXXX", 4) == 0) {
-        return 2;
-    } else if (strncmp(s3, "YYYY", 4) == 0) {
-        return 3;
-    } else {
-
-    }
     return 0; 
 }
 
@@ -220,7 +218,8 @@ int main(int argc, char *argv[]) {
 
         char buf[BUF];
         while (part_num != 4) {
-            part_num=menu();
+            int input_type = 0;
+            part_num=menu(&input_type);
             switch (part_num) {
                 case 1 :
                     //                这里应该是一个while循环，直到用户输入“0”之后才结束
@@ -245,12 +244,15 @@ int main(int argc, char *argv[]) {
                             printf("Invalid format, Please try again\n");
                             continue;
                         }
-                        for (i = next_team; i >= 0; i--) {
+                        for (i = next_team-1; i >= 0; i--) {
                             if (temp.manager == teamArr[i].manager || strcmp(temp.name, teamArr[i].name) == 0) {
                                 printf("Invalid team information, Please try again\n");
-                                continue;
+                                valid = -1;
+                                break;
                             }
                         }
+                        if(valid == -1)
+                            continue;
                         personArr[temp.manager].manageTeam = next_team;
                         temp.index=next_team;
                         write(fd[0][1], team2str('G',&temp,buf), BUF);
@@ -259,60 +261,72 @@ int main(int argc, char *argv[]) {
                         strcpy(buf,"");
                         teamArr[next_team] = temp;
                         printf("Team \"%s\" for project \"%s\" is created\n",temp.name,temp.project);
-                        printf("%s",team2str('A',&temp,buf));
+               //         printf("%s",team2str('A',&temp,buf));
                     }
                     break;
                 case 2 :
                     strcpy(user_input_buf, "");
                     event temp;
-                    while ((user_input_buf[0] - '0') != 0) {
-                        printf("please input information of the meeting in the format :\n\"Team_X yyyy-mm-dd hh:mm x\"\n");
+                    while (1) {
                         printf("Enter > ");
 //                        getchar();
 //                    fgets(user_input_buf,100,stdin);
                         gets_s(user_input_buf);
+                        if(user_input_buf[0] - '0' == 0) break;
                         printf("Input is: %s\n", user_input_buf);
-                        if (strncmp(user_input_buf, "Team_", 5) == 0) {
+                        if (input_type == 1) {
                             temp = str2event(user_input_buf, teamArr);
                             if (temp.holdDay != -1) {
                                 temp.index=next_meeting;
                                 eventArr[next_meeting] = temp;
-                                write(fd[0][1], event2str('E',&temp,buf), strlen(buf));
+                                write(fd[0][1], event2str('E',&temp,buf), BUF);
+                                read(fda[1][0], buf, BUF);
                                 next_meeting++;
-                                print_event(temp, personArr);
+//                                print_event(temp, personArr);
                             } else {
                                 printf("Invalid input, please try again.\n");
                             }
                             continue;
                         }
-                        FILE *f = fopen(user_input_buf, "r");
-                        if (f == NULL) {
-                            printf("There is no such file. Please try again.\n");
-                            continue;
-                        }
-                        while (!feof(f)) {
+                        else if(input_type == 2){
+                            int stdfd = dup(0);
+                            int f = open(user_input_buf, O_RDONLY);
+                            if (f == -1) {
+                                printf("There is no such file. Please try again.\n");
+                                continue;
+                            }
+                            while (1) {
 //                    fgets(user_input_buf,100,stdin);
-                            gets_s(user_input_buf);
-                            if (strncmp(user_input_buf, "Team_", 5) == 0) {
-                                temp = str2event(user_input_buf, teamArr);
-                                if (temp.holdDay != -1) {
-                                    eventArr[next_meeting] = temp;
-                                    next_meeting++;
-                                    print_event(temp, personArr);
+                                int rett = gets_s(user_input_buf);
+                                if(rett == 0 || rett == -1)
+                                    break;
+                                if (strncmp(user_input_buf, "Team_", 5) == 0) {
+                                    temp = str2event(user_input_buf, teamArr);
+                                    if (temp.holdDay != -1) {
+                                        temp.index=next_meeting;
+                                        eventArr[next_meeting] = temp;
+                                        next_meeting++;
+                                        write(fd[0][1], event2str('E', &temp, buf), BUF);
+                                        read(fda[1][0], buf, BUF);
+//                                      print_event(temp, personArr);
+                                    }
                                 }
                             }
+                            dup2(stdfd, 0);
+                        }
+                        else if(input_type == 3){
                         }
                     }
                 case 3 :
 //                    getchar();
 //                    fgets(user_input_buf,100,stdin);
                     gets_s(user_input_buf);
-                    int c = getPrintCommand(user_input_buf, buf);
-                    if(c == 1){
+                    getPrintCommand(user_input_buf, buf);
+                    if(input_type == 1){
                         write(fd[0][1], buf, BUF);
                         read(fda[0][0], buf, BUF);
-                    }else if(c == 2){
-                    }else if(c == 3){                    
+                    }else if(input_type == 2){
+                    }else if(input_type == 3){                    
                     }
                     //                对用户输入进行转义，之后进行输出
                     //                do part 3
@@ -325,7 +339,7 @@ int main(int argc, char *argv[]) {
                 default:
                     printf("Invalid input, please try again.\n=========================================\n\n");
             }
-            part_num = menu();
+            part_num = menu(&input_type);
         }
         printf("\n~~~~~Thank you, wish you have a nice day!~~~~~\n");
 

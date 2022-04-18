@@ -59,6 +59,7 @@ int gets_s(char* str){
 	    str[i]=c;
     }
 	str[i]=0;
+    if(c == EOF) return -1;
 	return i;
 }
 
