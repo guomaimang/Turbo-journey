@@ -9,6 +9,7 @@
 #include <sys/stat.h>
 
 
+/*
 void fillString(char* output, int index, const char buf[101]){
     int cursor = -1;
     int counter = 0;
@@ -37,6 +38,7 @@ void fillString(char* output, int index, const char buf[101]){
     }
 
 }
+*/
 
 // void event2str(char sig, event e, char str[101]){
 //    sprintf(str,"%c$3$%d$%d$%d$%d$%d$%s$%s",sig,e.index,e.teamID,e.holdDay,e.startTime,e.endTime,e.name,e.project);
@@ -133,6 +135,7 @@ int F1main(int GPfd[2][2], int Ffd[2][2]) {
         // FF pass F1 a new team/group
         if (signal == 'G') {
 
+            /*
             team oneTeam;
             char tempStr0[101];
 
@@ -157,7 +160,11 @@ int F1main(int GPfd[2][2], int Ffd[2][2]) {
 
             fillString(tempStr0, teamArr[oneTeam.index].memberCount + 5, GPbuf[0]);
             strcpy(teamArr[oneTeam.index].project, tempStr0);       // get project name
-
+            */
+            int id = 0;
+            sscanf(GPbuf[0], "G$2$%d", &id);
+            team *t = &teamArr[id];
+            sscanf(GPbuf[0],"G$2$%d$%[^$]$%[^$]$%d$%d$%d$%d$%d$%d",&t->index,t->name,t->project,&t->manager,&t->memberCount,&t->member[0],&t->member[1],&t->member[2], &t->member[3]);
             // response FF ack
             Fbuf[0][0] = 'D';
             write(Ffd[0][1], Fbuf[0], 101);
@@ -198,8 +205,8 @@ int F1main(int GPfd[2][2], int Ffd[2][2]) {
             */
             sscanf(GPbuf[0], "E$3$%d", &id);
             event* e = &eventArr[id];
-            sscanf(GPbuf[0], "E$3$%d$%d$%d$%d$%d$%s$%s",&e->index,&e->teamID,&e->holdDay,&e->startTime,&e->endTime,e->name,e->project);
-            
+            sscanf(GPbuf[0], "E$3$%d$%d$%d$%d$%d$%[^$]$%s",&e->index,&e->teamID,&e->holdDay,&e->startTime,&e->endTime,e->name,e->project);
+            eventUsage = id + 1; 
 
             // response FF ack
             Fbuf[0][0] = 'D';
@@ -298,8 +305,10 @@ int F1main(int GPfd[2][2], int Ffd[2][2]) {
             }
 */
             for(i = 0; i < eventUsage; ++i){
+                event tmp = eventArr[i];
                 if(trySchedule(&eventArr[i], f1fd, cfd) || reschedule(&eventArr[i], f1fd, cfd))
                     eventSuccess[i] = 1;
+                else eventArr[i] = tmp;
             }
 
             // after scheduling, print all event

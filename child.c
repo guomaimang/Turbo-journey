@@ -33,7 +33,7 @@ int Child(childInput *input){
             int idx;
             sscanf(token, "%d", &idx);
             eventArr[idx].index = idx;
-            sscanf(*rem, "%d$%d$%d$%d$%s$%s", &eventArr[idx].teamID, &eventArr[idx].holdDay, &eventArr[idx].startTime, 
+            sscanf(*rem, "%d$%d$%d$%d$%[^$]$%s", &eventArr[idx].teamID, &eventArr[idx].holdDay, &eventArr[idx].startTime, 
                     &eventArr[idx].endTime, eventArr[idx].name, eventArr[idx].project);
             int nowday = eventArr[idx].holdDay;
             int success = 1;

@@ -128,11 +128,14 @@ int trySchedule(event *e, int wfd[8][2], int rfd[8][2]){
     sprintf(buf, "T$3$%d$%d$%d$%d$%d$%s$%s", e->index, e->teamID, e->holdDay, e->startTime, e->endTime, e->name, e->project);
     int i;
     int succ = 1;
+    printf("id=%d\n", e->teamID);
     int memberCount = teamArr[e->teamID].memberCount;
+    printf("memberCount = %d\n", teamArr[e->teamID].memberCount);
     for(i = 0; i < memberCount; ++i){
         int c = teamArr[e->teamID].member[i];
         write(wfd[c][1], buf, BUF);
         read(rfd[c][0], buf2, BUF);
+        printf("%d return: %s\n", i, buf2);
         if(buf2[0] == 'Y') continue;
         succ = 0;
         int j;
