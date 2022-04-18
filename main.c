@@ -85,41 +85,41 @@ int member_id(char *name, person person_list[9]) {
     return -1;
 }
 
-team create_team(char* str,person personArr[9]) {
-    team ans = {};
+int create_team(char* str,person personArr[9], team *ans) {
     char *p = strtok(str, " ");
-    strcpy(ans.name,p);
+    printf("name=%s\n", p);
+    strcpy(ans->name,p);
 
     p = strtok(NULL, " ");
-    strcpy(ans.project,p);
+    strcpy(ans->project,p);
+    printf("project=%s\n", p);
 
     p = strtok(NULL, " ");
-    ans.manager = member_id(p, personArr);
+    ans->member[0] = ans->manager = member_id(p, personArr);
+    printf("manager=%s\n", p);
 
-    for (int i = 0; i < 3; i++) {
+    ans->memberCount = 1;
+    int i;
+    for (i = 1; i < 4; i++) {
         p = strtok(NULL, " ");
-        ans.member[i] = member_id(p, personArr);
-        personArr[ans.member[i]].asMember+=1;
-        if(personArr[ans.member[i]].manageTeam!=-1){
-            ans.member[0]=-1;
-            return ans;
-        }else if(personArr[ans.member[i]].asMember>=3){
-            ans.member[0]=-1;
-            return ans;
+        if(p == NULL) break;
+        ++ans->memberCount;
+        ans->member[i] = member_id(p, personArr);
+        personArr[ans->member[i]].asMember+=1;
+        if(personArr[ans->member[i]].manageTeam!=-1){
+            return -1;
+        }else if(personArr[ans->member[i]].asMember>=3){
+            return -1;
         }
     }
-    for(int i=0;i<3;i++){
-        if(ans.member[i]>=0){
-            ans.memberCount=(i+1);
-        }
-    }
-    return ans;
+    for(;i<4;i++) ans->member[i]=-1;
+    return 0;
 }
 
-void print_team(team t, person person_list[9],person personArr[9]) {
+void print_team(team *t, person person_list[9],person personArr[9]) {
 
-    printf("team: %s\nteam leader:%s\nteam_member:%s, %s, %s\n", t.name, personArr[t.manager].name,
-           person_list[t.member[0]].name, person_list[t.member[1]].name, person_list[t.member[2]].name);
+    printf("team: %s\nteam leader:%s\nteam_member:%s, %s, %s\n", t->name, personArr[t->manager].name,
+           person_list[t->member[0]].name, person_list[t->member[1]].name, person_list[t->member[2]].name);
 
 }
 
@@ -225,38 +225,34 @@ int main(int argc, char *argv[]) {
                 case 1 :
                     //                这里应该是一个while循环，直到用户输入“0”之后才结束
                     printf("Please input information of the team in the format :\n\"Team_X Project_X Leader_name Member_name_1 Member_name_2 Member_name_3\"\n");
-                    printf("Enter > ");
+//                    printf("Enter > ");
 //                    getchar();
 //                    fgets(user_input_buf,100,stdin);
-                    gets_s(user_input_buf);
+//                    gets_s(user_input_buf);
 //                    printf("Input is: %s\n", user_input_buf);
-                    while ((user_input_buf[0] - '0') != 0) {
-                        team temp = create_team(user_input_buf, personArr);
+                    while (1) {
                         printf("Enter > ");
-//                    fgets(user_input_buf,100,stdin);
-                        puts("0");
                         gets_s(user_input_buf);
-                        puts("1");
-                        print_team(temp, personArr, personArr);
-                        puts("2");
+                        if(user_input_buf[0] == '0')
+                            break;
+                        team temp = {0};
+                        int valid = create_team(user_input_buf, personArr, &temp);
+//                        print_team(&temp, personArr, personArr);
                         if (next_team >= 5) {
                             printf("Already 5 teams");
                             continue;
-                        } else if (temp.member[0] == -1) {
+                        } else if (valid == -1) {
                             printf("Invalid format, Please try again\n");
                             continue;
                         }
-                        puts("3");
                         for (i = next_team; i >= 0; i--) {
                             if (temp.manager == teamArr[i].manager || strcmp(temp.name, teamArr[i].name) == 0) {
                                 printf("Invalid team information, Please try again\n");
                                 continue;
                             }
                         }
-                        puts("4");
                         personArr[temp.manager].manageTeam = next_team;
                         temp.index=next_team;
-                        return 0;
                         write(fd[0][1], team2str('G',&temp,buf), BUF);
 
                         read(fda[0][0],buf,100);

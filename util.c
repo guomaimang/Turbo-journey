@@ -63,7 +63,7 @@ int gets_s(char* str){
 }
 
 char* team2str(char sig,team *t,char str[]){
-    sprintf(str,"%c$2$%d$%s$%s$%d$%d$%d$%d$%d",sig,t->index,t->name,t->project,t->manager,t->memberCount,t->member[0],t->member[1],t->member[2]);
+    sprintf(str,"%c$2$%d$%s$%s$%d$%d$%d$%d$%d$%d",sig,t->index,t->name,t->project,t->manager,t->memberCount,t->member[0],t->member[1],t->member[2], t->member[3]);
     return str;
 }
 

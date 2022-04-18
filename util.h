@@ -16,7 +16,7 @@ typedef struct typeTeam{
 
   int manager; 	// 从职员库中索引定位
   int memberCount; // how many member
-  int member[3];
+  int member[4];
 
 }team;
 
