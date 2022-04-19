@@ -25,7 +25,7 @@ typedef struct typeTeam{
 
 }team;
 
-// 类型编号 3
+// struct 3
 typedef struct typeEvent{
   int index;
 
