@@ -362,10 +362,12 @@ int main(int argc, char *argv[]) {
                             //fflush(stdin);
                         }
                         else if(input_type == 3){
-                            write(fd[0][1], "B", 1);
+                            gets_s(user_input_buf, stdin);
+                            event temp = str2event(user_input_buf, teamArr);
+                            sprintf(buf, "B$%d$%d$%d$%d", temp.teamID, temp.holdDay, temp.startTime, temp.endTime);
+                            write(fd[0][1], buf, strlen(buf));
                             int numget = read(fda[0][0],buf2,100);
                             while(numget == 0) numget = read(fda[0][0], buf2, 100);
-                            
                         }
                     }
                     break;

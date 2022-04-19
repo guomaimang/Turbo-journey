@@ -147,10 +147,6 @@ void printAttendanceReport(event finalEventArr[], int finalEventCnt, int startDa
 // rejected:
 // providing the required time meeting information
 
-int checkTeamID = 2;
-int checkDay = 3;
-int checkStartTime = 9;
-int checkEndTime = 15;
 
 // duplicated team member 
 // 0 represents no conflict
@@ -167,7 +163,7 @@ int checkTeam(team t1, team t2){
     }
     return 0;
 }
-void ifAvailable(event finalEventArr[], int finalEventCnt, int checkTeamID, int checkStartTime, int checkEndTime){
+void ifAvailable(event finalEventArr[], int finalEventCnt, int checkTeamID, int checkDay, int checkStartTime, int checkEndTime){
     // in the final event array
     // 1. accept/reject the request
     int staffTime[8] = {0, 0, 0, 0, 0, 0, 0, 0}; // input 95

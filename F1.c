@@ -421,6 +421,8 @@ int F1main(int GPfd[2][2], int Ffd[2][2]) {
         }
         else if(signal == 'B'){
             event FinalEventArr[200] = {0};
+            int t, d, s, e;
+            sscanf(GPbuf[0], "B$%d$%d$%d$%d", &t, &d, &s, &e);
             int cnt = 0;
             for(i=0; i<eventUsage; ++i){
                if(eventSuccess[i] == 1)
@@ -429,7 +431,7 @@ int F1main(int GPfd[2][2], int Ffd[2][2]) {
             int stdfd = dup(1);
             int wfd = open("G06_FCFS_Analysis_Report.txt", O_WRONLY | O_CREAT | O_TRUNC, 0666);
             dup2(wfd, 1);
-            ifAvailable(FinalEventArr, cnt, 0, 0, 0);
+            ifAvailable(FinalEventArr, cnt, t, d, s, e);
             dup2(stdfd, 1);
             write(Ffd[0][1], "D", 1);
         }else if(signal == 'R'){
