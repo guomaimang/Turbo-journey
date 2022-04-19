@@ -378,7 +378,7 @@ int F1main(int GPfd[2][2], int Ffd[2][2]) {
                 }
             }
             
-            write(infd, "*** Meeting Request–REJECTED ***\n", 35);
+            write(infd, "*** Meeting Request–REJECTED123 ***\n", 35);
 //            sprintf(inbuf, "*** Meeting Request–REJECTED ***\n");
 //            write(infd, inbuf, 101);
             sprintf(inbuf, "\nThere are %d requests rejected for the required period.\n\n", rejectCount);

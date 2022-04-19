@@ -1,1 +1,1 @@
-extern int F2main(int fd[2][2], int fda[2][2]);
+extern int F2main(int ff2f[2][2], int f2ff[2][2]);

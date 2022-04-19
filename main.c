@@ -146,7 +146,7 @@ int menu(int *type) {
            "\t2c. \tMeeting Attendance (if implemented)\n\n");
     printf("3. \tPrint Meeting Schedule\n");
     printf("\t3a. \tFCFS (First Come First Served)\n"
-           "\t3b. \tXXXX (Another algorithm implemented)\n"
+           "\t3b. \tGARR (Another algorithm implemented)\n"
            "\t3c. \tYYYY (Attendance Report) (if implemented)\n\n");
     printf("4. \tExit\n\n"
            "Enter an option:");
@@ -193,7 +193,7 @@ int getPrintCommand(char* user_input, char* pipeDt){
     return 0; 
 }
 
-#define NUM_ALG 1
+#define NUM_ALG 2
 int main(int argc, char *argv[]) {
     int next_meeting = 0, next_team = 0, pid;
     int fd[2][2];
@@ -218,6 +218,9 @@ int main(int argc, char *argv[]) {
             if(i == 0){
                 F1main(fd, fda);
             }
+			else {
+				F2main(fd,fda);
+			}
             exit(0);
         }
     }
@@ -359,6 +362,11 @@ int main(int argc, char *argv[]) {
                         while(numget == 0) numget = read(fda[0][0], buf2, 100);
                         buf2[numget] = 0;
                     }else if(input_type == 2){
+						write(fd[1][1], buf, strlen(buf));
+                        strcpy(buf2, "");
+                        int numget = read(fda[1][0],buf2,100);
+                        while(numget == 0) numget = read(fda[1][0], buf2, 100);
+                        buf2[numget] = 0;
                     }else if(input_type == 3){                    
                     }
                     //                对用户输入进行转义，之后进行输出

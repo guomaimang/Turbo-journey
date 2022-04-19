@@ -15,8 +15,8 @@
 
 int f2c[8][2],c2f[8][2];
 
-int eventCnt=10; // event number
-int sortedEventArr[200];  // storing the index
+int head,tail; // event number
+int sortedEventArr[200],eventCnt;
 
 // sort by priority
 // sort by endtime
@@ -27,15 +27,15 @@ int sortedEventArr[200];  // storing the index
 
 void sortEventArr() {
 	event storage[200];
-	int s;
-	for(s=0; s<eventCnt; s++){
-		storage[s]=eventArr[s];
+	int i, j;
+	eventCnt=0;
+	for(i=head; i<tail; ++i){
+		storage[eventCnt++]=eventArr[i];
 	}
 
-	int i, j;
 	//printf("%d %d\n",eventCnt,eventArr[0].index);
 	//for(i=0;i<eventCnt;++i) printEvent(&eventArr[i]);
-	puts("");
+	//puts("");
 	for(i=1; i<eventCnt; i++){
 		event new_event = storage[i];
 		char key = (personArr[teamArr[new_event.teamID].manager].name)[0];
@@ -68,8 +68,8 @@ void sortEventArr() {
         storage[j+1] = new_event;
 	}
 
-	for(s=0; s<eventCnt; s++){
-		sortedEventArr[s]=storage[s].index;
+	for(i=0; i<eventCnt; i++){
+		sortedEventArr[i]=storage[i].index;
 	}
 }
 
@@ -108,7 +108,7 @@ int schedule(int eventID) {
 	}
 	return flag; */
 }
-int unhandled[2][200],tot[2]={0};
+int unhandled[2][200],tot[2];
 int rejectCnt,rejectedArr[200];
 void scheduleAll() {
 	tot[0]=tot[1]=0;
@@ -148,7 +148,6 @@ void scheduleAll() {
 	}
 	dr^=1;
 	tot[dr^1]=0;
-	rejectCnt=0;
 	for(i=0;i<tot[dr];++i) {
 		int now=unhandled[dr][i];
 		if(reschedule(&eventArr[now],f2c,c2f)) {
@@ -159,12 +158,15 @@ void scheduleAll() {
 		}
 	}
 }
-
+int printCnt;
 void print(int beginDate,int endDate) {
+	++printCnt;
+	char fileName[50];
+	sprintf(fileName,"Schedule_GARR_%02d.txt",printCnt);
 	FILE *out;
-	out=fopen("Schedule_MINE.txt","w");
+	out=fopen(fileName,"w");
 	fputs("*** Project Meeting ***\n\n",out);
-	fputs("Algorithm used: MINE\n",out);
+	fputs("Algorithm used: GARR\n",out);
 	fprintf(out,"PeriodL %s to %s\n\n",toDate[beginDate],toDate[endDate]);
 	fputs("Date          Start   End     Team     Project\n",out);
 	fputs("===========================================================================\n",out);
@@ -189,7 +191,7 @@ void print(int beginDate,int endDate) {
                            now->endTime - now->startTime);
 	}
  	char send[80],rcv[10];
-	sprintf(send,"P$%d$%d$%d",fileno(out),beginDate,endDate);
+	sprintf(send,"P$%s$%d$%d",fileName,beginDate,endDate);
 	for(i=0;i<8;++i) {
 		WRITEC(i);
 		READC(i);
@@ -240,6 +242,7 @@ team ins2team(char ins[]) {
 
 
 int F2main(int ff2f[2][2],int f2ff[2][2]) {
+	puts("HHH");
 	close(ff2f[1][1]);
 	close(f2ff[1][0]);
 	//open pipe
@@ -262,7 +265,7 @@ int F2main(int ff2f[2][2],int f2ff[2][2]) {
 			int childID=i;
             childInput input = (childInput){f2c[i], c2f[i], childID};
             Child(&input);
-			break;
+			exit(0);
 		}
 	}
 #define WRITEFF write(f2ff[1][1],send1,strlen(send1))
@@ -273,6 +276,9 @@ int F2main(int ff2f[2][2],int f2ff[2][2]) {
 		close(c2f[i][1]);		
 	}
 	memset(myCalendar,0xff,sizeof myCalendar);
+	head=tail=0;
+	rejectCnt=0;
+	printCnt=0;
 	char rcv1[80],send1[]="D";
 	char rcv[80],send[80];
 	while(1) {
@@ -289,15 +295,13 @@ int F2main(int ff2f[2][2],int f2ff[2][2]) {
 				send[1]=0;
 				for(i=0;i<8;++i) {
 					WRITEC(i);
-					READC(i);
 				}
-				WRITEFF;
 				return 0;
 			}
 			case 'E': {//event
 				event tmp=ins2event(rcv1);
 				eventArr[tmp.index]=tmp;
-				eventCnt=tmp.index+1;
+				tail++;
 				WRITEFF;
 				break;
 			}
@@ -315,6 +319,7 @@ int F2main(int ff2f[2][2],int f2ff[2][2]) {
 				int endDate=atoi(token);
 				while(token!=NULL) token=strtok(NULL,"$");
 				scheduleAll();
+				head=tail;
 				print(beginDate,endDate);
 				WRITEFF;
 				break;
