@@ -137,7 +137,7 @@ void print_team(team *t, person person_list[9],person personArr[9]) {
 }
 
 int menu(int *type) {
-    char ans[5];
+    char ans[20];
     printf("\n\n~~ WELCOME TO PolyStar ~~\n\n");
     printf("1. \tCreate Project Team\n\n");
     printf("2. \tProject Meeting Request\n");
@@ -193,7 +193,7 @@ int getPrintCommand(char* user_input, char* pipeDt){
     return 0; 
 }
 
-#define NUM_ALG 2
+#define NUM_ALG 1
 int main(int argc, char *argv[]) {
     int next_meeting = 0, next_team = 0, pid;
     int fd[2][2];
@@ -217,9 +217,8 @@ int main(int argc, char *argv[]) {
             prctl(PR_SET_PDEATHSIG, SIGKILL);
             if(i == 0){
                 F1main(fd, fda);
-            }
-			else {
-				F2main(fd,fda);
+            }else {
+			//	F2main(fd,fda);
 			}
             exit(0);
         }
@@ -375,7 +374,8 @@ int main(int argc, char *argv[]) {
                     break;
                 case 4:
                     write(fd[0][1],"F",strlen("F"));
-                    wait(NULL);
+                    for(i=0; i<NUM_ALG; ++i)
+                        wait(NULL);
                     break;
                 default:
                     printf("Invalid input, please try again.\n=========================================\n\n");
