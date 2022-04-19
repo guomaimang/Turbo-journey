@@ -1,5 +1,4 @@
 #include "child.h"
-#include "util.h"
 #include "F3.h"
 #include<stdio.h>
 #include<string.h>
@@ -24,8 +23,8 @@
 // team teamArr[6];
 
 //event finalEventArr[200]; // this is the final event arrangment
-int finalEventCnt = 9; // the final event number
-
+// int finalEventCnt = 9; // the final event number
+/*
     // for testing
     event finalEventArr[200]={
         	{5, 2, 1, 13, 14, '0','0'}, // 1
@@ -56,6 +55,7 @@ int finalEventCnt = 9; // the final event number
             {6,"Gray",-1,0},
             {7,"Helen",-1,0}
     };
+*/
 
 int receivedRequests[8] = {10, 10, 10, 10, 10, 10, 10, 10}; // input 80
 // int acceptedRequests[8] = {3, 3, 2, 2, 2, 0, 0, 0}; // input 12
@@ -78,7 +78,7 @@ int endDay = 17;
 // generating report
 // *****THIS IS BONUS 3C*****
 
-void printAttendanceReport(){
+void printAttendanceReport(event finalEventArr[], int finalEventCnt){
     printf("Performance: \n\n");
 
     // 1. total received requests
@@ -151,7 +151,7 @@ int checkTeam(team t1, team t2){
     }
     return 0;
 }
-void ifAvailable(){
+void ifAvailable(event finalEventArr[], int finalEventCnt){
     // in the final event array
     // 1. accept/reject the request
     int available = 1;
@@ -195,35 +195,3 @@ void ifAvailable(){
     printf("===========================================================================\n");
 }
 
-int main(){
-    // this is to initialize the array accepted requests
-    // and this is to initialize the array staff time
-
-    int i;
-    for(i=0; i<8; i++){
-        int j;
-        for(j=0; j<finalEventCnt; j++){
-            int z;
-            int status = 0;
-            for(z=0; z<teamArr[finalEventArr[j].teamID].memberCount; z++){
-                if(((teamArr[finalEventArr[j].teamID].member)[z])==i){
-                    if(status==0){
-                        acceptedRequests[i]++;
-                        status++;
-                    }
-                    staffTime[i] = staffTime[i] + finalEventArr[j].endTime - finalEventArr[j].startTime;
-                }
-            }
-        }
-    }
-
-    // for(i=0; i<8; i++){
-    //     printf("accepted requests: %d\n", acceptedRequests[i]);
-    // }
-    // for(i=0; i<8; i++){
-    //     printf("time: %d\n", staffTime[i]);
-    // }
-    //printAttendanceReport();
-    ifAvailable();
-    return 0;
-}

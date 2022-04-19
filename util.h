@@ -1,3 +1,5 @@
+#ifndef UTIL_H
+#define UTIL_H
 #include <stdio.h>
 
 //using for debug
@@ -53,3 +55,4 @@ extern int reschedule(event* e, int wfd[8][2], int rfd[8][2]);
 extern char* event2str(char sig,event *e,char str[]);
 extern char* team2str(char sig,team *t,char str[]);
 extern int gets_s(char* str, FILE* f);
+#endif

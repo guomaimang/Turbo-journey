@@ -414,23 +414,35 @@ int F1main(int GPfd[2][2], int Ffd[2][2]) {
             for (i = 0; i < 8; ++i) {
                 cbuf[i][0] = 'F';
                 cbuf[i][1] = 0;
-                write(cfd[i][1], cbuf, 1);
+               write(cfd[i][1], cbuf, 1);
             }
             break;
 			//ack FF
         }
         else if(signal == 'B'){
+            event FinalEventArr[200] = {0};
+            int cnt = 0;
+            for(i=0; i<eventUsage; ++i){
+               if(eventSuccess[i] == 1)
+                   FinalEventArr[cnt++] = eventArr[i];
+            }
             int stdfd = dup(1);
             int wfd = open("G06_FCFS_Analysis_Report.txt", O_WRONLY | O_CREAT | O_TRUNC, 0666);
             dup2(wfd, 1);
-            ifAvailable();
+            ifAvailable(FinalEventArr, cnt);
             dup2(stdfd, 1);
             write(Ffd[0][1], "D", 1);
         }else if(signal == 'R'){
+            event FinalEventArr[200] = {0};
+            int cnt = 0;
+            for(i=0; i<eventUsage; ++i){
+               if(eventSuccess[i] == 1)
+                   FinalEventArr[cnt++] = eventArr[i];
+            }
             int stdfd = dup(1);
             int wfd = open("G06_FCFS_Attendance_Report.txt", O_WRONLY | O_CREAT | O_TRUNC, 0666);
             dup2(wfd, 1);
-            printAttendanceReport();
+            printAttendanceReport(FinalEventArr, cnt);
             dup2(stdfd, 1);
             write(Ffd[0][1], "D", 1);
         }
