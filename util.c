@@ -38,7 +38,7 @@ char toTime[10][6] = {
     "18:00",
 };
 
-event eventArr[200]={
+/* event eventArr[200]={
 		{0, 0, 1, 9, 10, "0","0"}, // 5
 		{1, 0, 5, 12, 13, "0","0"},// 7
 		{2, 0, 1, 12, 13, "0","0"},// 6
@@ -52,12 +52,12 @@ event eventArr[200]={
 		// 5 6 7 9 8 0 2 1 4 3
 };
 team teamArr[6]={
-		{0,"team1","project1", 3, 0, {0,0,0,0}},
-		{1,"team2","project2", 4, 0, {0,0,0,0}},
-		{2,"team3","project3", 1, 0, {0,0,0,0}},
-		{3,"team4","project4", 2, 0, {0,0,0,0}},
-		{4,"team5","project5", 8, 0, {0,0,0,0}},
-		{5,"team6","project6", 5, 0, {0,0,0,0}},
+		{0,"team1","project1", 3, 4, {3,1,2,0}},
+		{1,"team2","project2", 4, 3, {4,5,3,0}},
+		{2,"team3","project3", 1, 3, {1,7,5,0}},
+		{3,"team4","project4", 2, 1, {2,0,0,0}},
+		{4,"team5","project5", 4, 1, {4,0,0,0}},
+		{5,"team6","project6", 6, 1, {6,0,0,0}},
 };
 person personArr[9]={
 		{0,"Alan",-1,0},
@@ -68,21 +68,21 @@ person personArr[9]={
 		{5,"Fanny",-1,0},
 		{6,"Gray",-1,0},
 		{7,"Helen",-1,0}
-};
+}; */
 
-// person personArr[9] = 
-// {
-    // {0, "Alan", -1, 0},
-    // {1, "Billy", -1, 0},
-    // {2, "Cathy", -1, 0},
-    // {3, "David", -1, 0},
-    // {4, "Eva", -1, 0},
-    // {5, "Fanny", -1, 0},
-    // {6, "Gary", -1, 0},
-    // {7, "Helen", -1, 0},
-// };
-// event eventArr[200]={};
-// team teamArr[6]={};
+person personArr[9] = 
+{
+    {0, "Alan", -1, 0},
+    {1, "Billy", -1, 0},
+    {2, "Cathy", -1, 0},
+    {3, "David", -1, 0},
+    {4, "Eva", -1, 0},
+    {5, "Fanny", -1, 0},
+    {6, "Gary", -1, 0},
+    {7, "Helen", -1, 0},
+};
+event eventArr[200]={};
+team teamArr[6]={};
 int myCalendar[20][10];
 
 
