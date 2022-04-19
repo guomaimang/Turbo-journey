@@ -117,4 +117,4 @@ Turbo-Journey's first algorithm is very similar to the Process scheduling algori
 
 ## Customized algorithm
 
-<img src="https://pic.hanjiaming.com.cn/2022/04/19/72a164884b965.png" alt="CleanShot 2022-04-19 at 14.09.45@2x.png" style="zoom:50%;" />
+<img src="https://pic.hanjiaming.com.cn/2022/04/19/7c9f0f1386c78.png" alt="1650367298808.png" style="zoom: 33%;" />
