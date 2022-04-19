@@ -362,6 +362,10 @@ int main(int argc, char *argv[]) {
                             //fflush(stdin);
                         }
                         else if(input_type == 3){
+                            write(fd[0][1], "B", 1);
+                            int numget = read(fda[0][0],buf2,100);
+                            while(numget == 0) numget = read(fda[0][0], buf2, 100);
+                            
                         }
                     }
                     break;
@@ -385,6 +389,9 @@ int main(int argc, char *argv[]) {
                         while(numget == 0) numget = read(fda[1][0], buf2, 100);
                         buf2[numget] = 0;
                     }else if(input_type == 3){                    
+                        write(fd[0][1], "R", 1);
+                        int numget = read(fda[0][0],buf2,100);
+                        while(numget == 0) numget = read(fda[0][0], buf2, 100);
                     }
                     //                对用户输入进行转义，之后进行输出
                     //                do part 3

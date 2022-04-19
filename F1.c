@@ -5,6 +5,7 @@
 #include <sys/wait.h>
 #include "util.h"
 #include "child.h"
+#include "F3.h"
 #include <fcntl.h>
 #include <sys/stat.h>
 
@@ -417,6 +418,21 @@ int F1main(int GPfd[2][2], int Ffd[2][2]) {
             }
             break;
 			//ack FF
+        }
+        else if(signal == 'B'){
+            int stdfd = dup(1);
+            int wfd = open("G06_FCFS_Analysis_Report.txt", O_WRONLY | O_CREAT | O_TRUNC, 0666);
+            dup2(wfd, 1);
+            ifAvailable();
+            dup2(stdfd, 1);
+            write(Ffd[0][1], "D", 1);
+        }else if(signal == 'R'){
+            int stdfd = dup(1);
+            int wfd = open("G06_FCFS_Attendance_Report.txt", O_WRONLY | O_CREAT | O_TRUNC, 0666);
+            dup2(wfd, 1);
+            printAttendanceReport();
+            dup2(stdfd, 1);
+            write(Ffd[0][1], "D", 1);
         }
     }
 
