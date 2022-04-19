@@ -398,7 +398,6 @@ int F1main(int GPfd[2][2], int Ffd[2][2]) {
                 cbuf[i][0] = 'F';
                 cbuf[i][1] = 0;
                 write(cfd[i][1], cbuf, 101);
-				//get ack from child
             }
             break;
 			//ack FF

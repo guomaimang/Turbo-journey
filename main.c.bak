@@ -218,9 +218,6 @@ int main(int argc, char *argv[]) {
             if(i == 0){
                 F1main(fd, fda);
             }
-			else {
-				F1main(fd,fda);
-			}
             exit(0);
         }
     }
