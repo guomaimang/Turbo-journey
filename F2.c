@@ -366,7 +366,7 @@ int F2main(int ff2f[2][2],int f2ff[2][2]) {
 				int stdfd = dup(1);
 				int wfd = open("G06_FCFS_Analysis_Report.txt", O_WRONLY | O_CREAT | O_TRUNC, 0666);
 				dup2(wfd, 1);
-				ifAvailable(finalEvents, finalCnt);
+//				ifAvailable(finalEvents, finalCnt);
 				dup2(stdfd, 1);
 				WRITEFF;
 				break;
@@ -375,7 +375,7 @@ int F2main(int ff2f[2][2],int f2ff[2][2]) {
 				int stdfd = dup(1);
 				int wfd = open("G06_FCFS_Attendance_Report.txt", O_WRONLY | O_CREAT | O_TRUNC, 0666);
 				dup2(wfd, 1);
-				printAttendanceReport(finalEvents, finalCnt);
+		//		printAttendanceReport(finalEvents, finalCnt);
 				dup2(stdfd, 1);
 				WRITEFF;
 				break;
