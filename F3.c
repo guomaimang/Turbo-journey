@@ -57,33 +57,49 @@
     };
 */
 
-int receivedRequests[8] = {10, 10, 10, 10, 10, 10, 10, 10}; // input 80
-// int acceptedRequests[8] = {3, 3, 2, 2, 2, 0, 0, 0}; // input 12
-int acceptedRequests[8] = {0, 0, 0, 0, 0, 0, 0, 0}; // input 12
-int rejectedRequests[8] = {0, 0, 0, 0, 0, 0, 0, 0}; 
-int totalReceivedRequests = 0;
-int totalAcceptedRequests = 0;
-int totalRejectedRequests = 0;
-
-int teamTime[5] = {0, 0, 0, 0, 0}; 
-// int staffTime[8] = {16, 16, 16, 3, 3, 0, 0, 0}; // input 95
-int staffTime[8] = {0, 0, 0, 0, 0, 0, 0, 0}; // input 95
-float teamTimeUtil[5] = {0, 0, 0, 0, 0};
-float staffTimeUtil[8] = {0, 0, 0, 0, 0, 0, 0, 0};
-float staffAttendanceRate[8] = {0, 0, 0, 0, 0, 0, 0, 0};
-
-int startDay = 0;
-int endDay = 17;
 // need to write to the child
 // generating report
 // *****THIS IS BONUS 3C*****
 
-void printAttendanceReport(event finalEventArr[], int finalEventCnt){
+void printAttendanceReport(event finalEventArr[], int finalEventCnt, int startDay, int endDay, int receivedRequests[8]){
+//    int receivedRequests[8] = {10, 10, 10, 10, 10, 10, 10, 10}; // input 80
+    // int acceptedRequests[8] = {3, 3, 2, 2, 2, 0, 0, 0}; // input 12
+    int acceptedRequests[8] = {0, 0, 0, 0, 0, 0, 0, 0}; // input 12
+    int rejectedRequests[8] = {0, 0, 0, 0, 0, 0, 0, 0}; 
+    int totalReceivedRequests = 0;
+    int totalAcceptedRequests = 0;
+    int totalRejectedRequests = 0;
+
+    int teamTime[5] = {0, 0, 0, 0, 0}; 
+    // int staffTime[8] = {16, 16, 16, 3, 3, 0, 0, 0}; // input 95
+    int staffTime[8] = {0, 0, 0, 0, 0, 0, 0, 0}; // input 95
+    float teamTimeUtil[5] = {0, 0, 0, 0, 0};
+    float staffTimeUtil[8] = {0, 0, 0, 0, 0, 0, 0, 0};
+    float staffAttendanceRate[8] = {0, 0, 0, 0, 0, 0, 0, 0};
+
+    int i;
+    for(i=0; i<8; i++){
+        int j;
+        for(j=0; j<finalEventCnt; j++){
+            int z;
+            int status = 0;
+            for(z=0; z<teamArr[finalEventArr[j].teamID].memberCount; z++){
+                if(((teamArr[finalEventArr[j].teamID].member)[z])==i){
+                    if(status==0){
+                        acceptedRequests[i]++;
+                        status++;
+                    }
+                    staffTime[i] = staffTime[i] + finalEventArr[j].endTime - finalEventArr[j].startTime;
+                }
+            }
+        }
+    }
+
+
     printf("Performance: \n\n");
 
     // 1. total received requests
     // 2. total accepted/rejected requests
-    int i;
     for(i=0; i<8; i++){
         totalReceivedRequests=totalReceivedRequests+receivedRequests[i];
         totalAcceptedRequests=totalAcceptedRequests+acceptedRequests[i];
@@ -151,11 +167,29 @@ int checkTeam(team t1, team t2){
     }
     return 0;
 }
-void ifAvailable(event finalEventArr[], int finalEventCnt){
+void ifAvailable(event finalEventArr[], int finalEventCnt, int checkTeamID, int checkStartTime, int checkEndTime){
     // in the final event array
     // 1. accept/reject the request
-    int available = 1;
+    int staffTime[8] = {0, 0, 0, 0, 0, 0, 0, 0}; // input 95
+    int acceptedRequests[8] = {0, 0, 0, 0, 0, 0, 0, 0}; // input 12
     int i;
+    for(i=0; i<8; i++){
+        int j;
+        for(j=0; j<finalEventCnt; j++){
+            int z;
+            int status = 0;
+            for(z=0; z<teamArr[finalEventArr[j].teamID].memberCount; z++){
+                if(((teamArr[finalEventArr[j].teamID].member)[z])==i){
+                    if(status==0){
+                        acceptedRequests[i]++;
+                        status++;
+                    }
+                    staffTime[i] = staffTime[i] + finalEventArr[j].endTime - finalEventArr[j].startTime;
+                }
+            }
+        }
+    }
+    int available = 1;
     for(i=0; i<finalEventCnt; i++){
         if(finalEventArr[i].holdDay==checkDay){
             // the time is overlapping

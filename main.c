@@ -145,9 +145,9 @@ int menu(int *type) {
            "\t2b. \tBatch input\n"
            "\t2c. \tMeeting Attendance (if implemented)\n\n");
     printf("3. \tPrint Meeting Schedule\n");
-    printf("\t3a. \tFCFS (First Come First Served)\n"
-           "\t3b. \tGARR (Another algorithm implemented)\n"
-           "\t3c. \tYYYY (Attendance Report) (if implemented)\n\n");
+    printf("\t3a. \tFCFS YYY1-M1-D1 YYY2-M2-D2 (First Come First Served)\n"
+           "\t3b. \tGARR YYY1-M1-D1 YYY2-M2-D2 (Another algorithm implemented)\n"
+           "\t3c. \tREPO YYY1-M1-D1 YYY2-M2-D2 (Attendance Report)\n\n");
     printf("4. \tExit\n\n"
            "Enter an option:");
     //scanf("%s", ans);
@@ -374,8 +374,8 @@ int main(int argc, char *argv[]) {
 //                    fgets(user_input_buf,100,stdin);
                     printf("Enter > ");
                     gets_s(user_input_buf, stdin);
-                    getPrintCommand(user_input_buf, buf);
                     if(input_type == 1){
+                        getPrintCommand(user_input_buf, buf);
                     //    puts("FF: Start Sending...");
                         write(fd[0][1], buf, strlen(buf));
                         strcpy(buf2, "");
@@ -383,13 +383,20 @@ int main(int argc, char *argv[]) {
                         while(numget == 0) numget = read(fda[0][0], buf2, 100);
                         buf2[numget] = 0;
                     }else if(input_type == 2){
+                        getPrintCommand(user_input_buf, buf);
 						write(fd[1][1], buf, strlen(buf));
                         strcpy(buf2, "");
                         int numget = read(fda[1][0],buf2,100);
                         while(numget == 0) numget = read(fda[1][0], buf2, 100);
                         buf2[numget] = 0;
-                    }else if(input_type == 3){                    
-                        write(fd[0][1], "R", 1);
+                    }else if(input_type == 3){
+                        char date1[15], date2[15];
+                        sscanf(user_input_buf, "REPO %s %s", date1, date2);
+                        int m1, d1, m2, d2;
+                        sscanf(date1, "2022-%d-%d", &m1, &d1);
+                        sscanf(date2, "2022-%d-%d", &m2, &d2);
+                        sprintf(buf, "R$%d$%d$", getDate(m1, d1), getDate(m2, d2));
+                        write(fd[0][1], buf2, strlen(buf));
                         int numget = read(fda[0][0],buf2,100);
                         while(numget == 0) numget = read(fda[0][0], buf2, 100);
                     }

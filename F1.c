@@ -429,20 +429,28 @@ int F1main(int GPfd[2][2], int Ffd[2][2]) {
             int stdfd = dup(1);
             int wfd = open("G06_FCFS_Analysis_Report.txt", O_WRONLY | O_CREAT | O_TRUNC, 0666);
             dup2(wfd, 1);
-            ifAvailable(FinalEventArr, cnt);
+            ifAvailable(FinalEventArr, cnt, 0, 0, 0);
             dup2(stdfd, 1);
             write(Ffd[0][1], "D", 1);
         }else if(signal == 'R'){
+            int d1, d2;
+            sscanf(GPbuf[0], "R$%d$%d", &d1, &d2);
             event FinalEventArr[200] = {0};
+            int receivedRequests[8] = {0};
             int cnt = 0;
             for(i=0; i<eventUsage; ++i){
-               if(eventSuccess[i] == 1)
-                   FinalEventArr[cnt++] = eventArr[i];
+                if(eventSuccess[i] == 1){
+                    FinalEventArr[cnt++] = eventArr[i];
+                }
+                int j;
+                for(j = 0; j < teamArr[eventArr[i].teamID].memberCount; ++j){
+                    ++receivedRequests[teamArr[eventArr[i].teamID].member[j]];
+                }
             }
             int stdfd = dup(1);
             int wfd = open("G06_FCFS_Attendance_Report.txt", O_WRONLY | O_CREAT | O_TRUNC, 0666);
             dup2(wfd, 1);
-            printAttendanceReport(FinalEventArr, cnt);
+            printAttendanceReport(FinalEventArr, cnt, d1, d2, receivedRequests);
             dup2(stdfd, 1);
             write(Ffd[0][1], "D", 1);
         }
