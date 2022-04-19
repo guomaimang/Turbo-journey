@@ -73,7 +73,8 @@ void sortEventArr() {
 		sortedEventArr[i]=storage[i].index;
 	}
 }
-
+event finalEvents[200];
+int finalCnt;
 // int scheduled[200]={0};
 #define WRITEC(i) write(f2c[i][1],send,strlen(send))
 #define READC(i) read(c2f[i][0],rcv,80)
@@ -82,6 +83,7 @@ int schedule(int eventID) {
 	if(flag) {
 		event* now=&eventArr[eventID];
 		myCalendar[now->holdDay][now->startTime-9]=eventID;
+		finalEvents[finalCnt++]=*now;
 	}
 	return flag;
 	
@@ -162,6 +164,7 @@ void scheduleAll() {
 		int now=unhandled[dr][i];
 		if(reschedule(&eventArr[now],f2c,c2f)) {
 			myCalendar[eventArr[now].holdDay][eventArr[now].startTime-9]=now;
+			finalEvents[finalCnt++]=eventArr[now];
 		}
 		else {
 			rejectedArr[rejectCnt++]=now;
@@ -308,6 +311,7 @@ int F2main(int ff2f[2][2],int f2ff[2][2]) {
 	head=tail=0;
 	rejectCnt=0;
 	printCnt=0;
+	finalCnt=0;
 	char rcv1[100],send1[]="D";
 	char rcv[100],send[80];
 	while(1) {
@@ -352,6 +356,24 @@ int F2main(int ff2f[2][2],int f2ff[2][2]) {
 				scheduleAll();
 				head=tail;
 				print(beginDate,endDate);
+				WRITEFF;
+				break;
+			}
+			case 'B': {
+				int stdfd = dup(1);
+				int wfd = open("G06_FCFS_Analysis_Report.txt", O_WRONLY | O_CREAT | O_TRUNC, 0666);
+				dup2(wfd, 1);
+				ifAvailable(finalEvents, finalCnt);
+				dup2(stdfd, 1);
+				WRITEFF;
+				break;
+			}
+			case 'R': {
+				int stdfd = dup(1);
+				int wfd = open("G06_FCFS_Attendance_Report.txt", O_WRONLY | O_CREAT | O_TRUNC, 0666);
+				dup2(wfd, 1);
+				printAttendanceReport(finalEvents, finalCnt);
+				dup2(stdfd, 1);
 				WRITEFF;
 				break;
 			}
