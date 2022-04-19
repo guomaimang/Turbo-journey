@@ -58,12 +58,10 @@ int F1main(int GPfd[2][2], int Ffd[2][2]) {
         printf("F1: UNEXPECT ERROR!\n");
     }
 */
-    char GPbuf[2][101];
-    char Fbuf[2][101];
+    char GPbuf[2][BUF];
+    char Fbuf[2][BUF];
     close(GPfd[0][1]);
-    close(GPfd[1][1]);
     close(Ffd[0][0]);
-    close(Ffd[1][0]);
 // ------------------------------------------------------------
 
 // Init
@@ -77,9 +75,9 @@ int F1main(int GPfd[2][2], int Ffd[2][2]) {
 
 // create child pipe
     int f1fd[8][2];     // F1 -> Cx
-    char f1buf[8][101];
+    char f1buf[8][BUF];
     int cfd[8][2];      // Cx -> F1
-    char cbuf[8][101];
+    char cbuf[8][BUF];
     for (i = 0; i < 8; ++i) {
         if (pipe(f1fd[i]) < 0 || pipe(cfd[i]) < 0) {
             printf("F1: Pipe creation error!\n");
@@ -87,11 +85,6 @@ int F1main(int GPfd[2][2], int Ffd[2][2]) {
         }
     }
 
-// close useless pipe
-    for (i = 0; i < 8; ++i) {
-        close(f1fd[i][0]);  // close read pip of F1
-        close(cfd[i][1]);   // close write pipe of child
-    }
 
 
 /*
@@ -108,6 +101,7 @@ int F1main(int GPfd[2][2], int Ffd[2][2]) {
             // Write Cx code
             childInput input = (childInput) {f1fd[i], cfd[i], childId};
             Child(&input);
+            exit(0);
         }
     }
 /*
@@ -121,11 +115,16 @@ int F1main(int GPfd[2][2], int Ffd[2][2]) {
  * F Mode: Client of FF
  * ===========================================================
  */
+    // close useless pipe
+    for (i = 0; i < 8; ++i) {
+        close(f1fd[i][0]);  // close read pip of F1
+        close(cfd[i][1]);   // close write pipe of child
+    }
     while (1) {
         // get message from FF
         // sleep(1);
         int np;
-        np = read(GPfd[0][0], GPbuf[0], 101);
+        np = read(GPfd[0][0], GPbuf[0], BUF);
         if (np <= 0) {
             continue;
         } // no message
@@ -166,12 +165,11 @@ int F1main(int GPfd[2][2], int Ffd[2][2]) {
             team *t = &teamArr[id];
             sscanf(GPbuf[0],"G$2$%d$%[^$]$%[^$]$%d$%d$%d$%d$%d$%d",&t->index,t->name,t->project,&t->manager,&t->memberCount,&t->member[0],&t->member[1],&t->member[2], &t->member[3]);
             // response FF ack
-            Fbuf[0][0] = 'D';
-            write(Ffd[0][1], Fbuf[0], 101);
+            write(Ffd[0][1], "D", 1);
         }
 
         // FF pass F1 to a new event
-        if (signal == 'E') {
+        else if (signal == 'E') {
             int id = 0;
             /*
             event oneEvent;
@@ -209,12 +207,11 @@ int F1main(int GPfd[2][2], int Ffd[2][2]) {
             eventUsage = id + 1; 
 
             // response FF ack
-            Fbuf[0][0] = 'D';
-            write(Ffd[0][1], Fbuf[0], 101);
+            write(Ffd[0][1], "D", 1);
         }
 
         // Print: Tell every child to print their calendar
-        if (signal == 'P') {
+        else if (signal == 'P') {
             // Init file
             int infd = open("Schedule_FCFS.txt", O_WRONLY | O_CREAT | O_TRUNC, 0666);
             char inbuf[101];
@@ -390,31 +387,34 @@ int F1main(int GPfd[2][2], int Ffd[2][2]) {
                     }
                 }
             }
+            
+            puts("F1: Done");
+            write(Ffd[0][1], "D", 1);
         }
 
         // End: Tell every child to end process
-        if (signal == 'F') {
+        else if (signal == 'F') {
             for (i = 0; i < 8; ++i) {
                 cbuf[i][0] = 'F';
                 cbuf[i][1] = 0;
-                write(cfd[i][1], cbuf, 101);
+                write(cfd[i][1], cbuf, BUF);
             }
             break;
         }
-        }
-
-        // close all pipe in the end
-        for (i = 0; i < 8; ++i) {
-            close(f1fd[i][1]);
-            close(cfd[i][0]);
-        }
-
-        // wait for all children
-        for (i = 0; i < 8; ++i) {
-            wait(NULL);
-        }
-
-        return 0;
     }
+
+    // close all pipe in the end
+    for (i = 0; i < 8; ++i) {
+        close(f1fd[i][1]);
+        close(cfd[i][0]);
+    }
+
+    // wait for all children
+    for (i = 0; i < 8; ++i) {
+        wait(NULL);
+    }
+
+    return 0;
+}
 
 

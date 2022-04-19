@@ -17,6 +17,8 @@ int Child(childInput *input){
 
     while(1){
         int readsize = read(input->f2c[0], buf, BUF); 
+        while(readsize == 0) 
+            readsize = read(input->f2c[0], buf, BUF); 
         buf[readsize] = 0;
         char **rem = NULL;
         char *token = strtok_r(buf, "$", rem);
@@ -41,7 +43,7 @@ int Child(childInput *input){
             int ret[idx];
             memset(ret, 0, sizeof(ret));
             for(i = eventArr[idx].startTime; i <eventArr[idx].endTime; ++i){
-                if(myCalendar[nowday][i-9] != 0){
+                if(myCalendar[nowday][i-9] > 0){
                     success = 0; 
                     ret[myCalendar[nowday][i-9]] = 1;
                 }
@@ -70,7 +72,7 @@ int Child(childInput *input){
                 
                 for(i = eventArr[idx].startTime; i <eventArr[idx].endTime; ++i){
                     int nowevent = myCalendar[nowday][i-9]; 
-                    if(nowevent != 0){
+                    if(nowevent > 0){
                         int j;
                         for(j=0; j<9; ++j)
                             if(nowevent == myCalendar[nowday][j])

@@ -133,6 +133,7 @@ int trySchedule(event *e, int wfd[8][2], int rfd[8][2]){
     printf("memberCount = %d\n", teamArr[e->teamID].memberCount);
     for(i = 0; i < memberCount; ++i){
         int c = teamArr[e->teamID].member[i];
+        puts("before log..."); 
         write(wfd[c][1], buf, BUF);
         read(rfd[c][0], buf2, BUF);
         printf("%d return: %s\n", i, buf2);
