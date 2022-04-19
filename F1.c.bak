@@ -72,6 +72,10 @@ int F1main(int GPfd[2][2], int Ffd[2][2]) {
             myCalendar[i][j] = -1;
         }
     } // init myCalendar[i][j] = -1
+    int eventSuccess[200];
+    for (i = 0; i < 200; ++i) {
+        eventSuccess[i] = -1;
+    }
 
 // create child pipe
     int f1fd[8][2];     // F1 -> Cx
@@ -234,10 +238,6 @@ int F1main(int GPfd[2][2], int Ffd[2][2]) {
 //            dayEnd = atoi(tempStr0);
 
             // log if event is successfully arranged
-            int eventSuccess[eventUsage];
-            for (i = 0; i < eventUsage; ++i) {
-                eventSuccess[i] = 0;
-            }
 
 /*
             // schedule each event i
@@ -306,12 +306,17 @@ int F1main(int GPfd[2][2], int Ffd[2][2]) {
             }
 */
             for(i = 0; i < eventUsage; ++i){
+                if(eventSuccess[i] >= 0)
+                    continue;
                 event tmp = eventArr[i];
                 if(trySchedule(&eventArr[i], f1fd, cfd) || reschedule(&eventArr[i], f1fd, cfd)){
                     eventSuccess[i] = 1;
                     debug("Success event: %d\n", i);
                 }
-                else eventArr[i] = tmp;
+                else {
+                    eventArr[i] = tmp;
+                    eventSuccess[i] = 0;
+                }
             }
 
             debug("F1: schedule done. \n");
@@ -359,7 +364,7 @@ int F1main(int GPfd[2][2], int Ffd[2][2]) {
                 }
             }
 
-
+            close(infd);
             // tell all child to print
             for (i = 0; i < 8; ++i) {
                 sprintf(cbuf[i], "P$%s$%d$%d", fileName, dayStart, dayEnd);
@@ -377,8 +382,9 @@ int F1main(int GPfd[2][2], int Ffd[2][2]) {
                     }
                 }
             }
+            infd = open(fileName, O_WRONLY | O_APPEND, 0666);
             
-            write(infd, "*** Meeting Request–REJECTED ***\n", 35);
+            write(infd, "*** Meeting Request–REJECTED ***\n", 32);
 //            sprintf(inbuf, "*** Meeting Request–REJECTED ***\n");
 //            write(infd, inbuf, 101);
             sprintf(inbuf, "\nThere are %d requests rejected for the required period.\n\n", rejectCount);
@@ -397,7 +403,7 @@ int F1main(int GPfd[2][2], int Ffd[2][2]) {
             }
             write(infd, "========================================================\n", 57);
 //            write(infd, inbuf, 101);
-
+            close(infd);
             debug("F1: Done\n");
             write(Ffd[0][1], "D", 1);
         }

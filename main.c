@@ -193,7 +193,7 @@ int getPrintCommand(char* user_input, char* pipeDt){
     return 0; 
 }
 
-#define NUM_ALG 1
+#define NUM_ALG 2
 int main(int argc, char *argv[]) {
     int next_meeting = 0, next_team = 0, pid;
     int fd[2][2];
@@ -218,7 +218,7 @@ int main(int argc, char *argv[]) {
             if(i == 0){
                 F1main(fd, fda);
             }else {
-			//	F2main(fd,fda);
+				F2main(fd,fda);
 			}
             exit(0);
         }
@@ -272,9 +272,14 @@ int main(int argc, char *argv[]) {
                         temp.index=next_team;
                         team2str('G', &temp, buf);
                         write(fd[0][1], buf, strlen(buf));
+						write(fd[1][1], buf, strlen(buf));
 
                         int numget = read(fda[0][0],buf2,100);
                         while(numget == 0) numget = read(fda[0][0], buf2, 100);
+						numget = read(fda[1][0],buf2,100);
+                        while(numget == 0) numget = read(fda[1][0], buf2, 100);
+						
+						
                         buf2[numget] = 0;
                         strcpy(buf,"");
                         teamArr[next_team++] = temp;
@@ -299,8 +304,14 @@ int main(int argc, char *argv[]) {
                                 eventArr[next_meeting] = temp;
                                 event2str('E', &temp, buf);
                                 write(fd[0][1], buf, strlen(buf));
+								write(fd[1][1], buf, strlen(buf));
+								
                                 int numget = read(fda[0][0],buf2,100);
                                 while(numget == 0) numget = read(fda[0][0], buf2, 100);
+								numget = read(fda[1][0],buf2,100);
+                                while(numget == 0) numget = read(fda[1][0], buf2, 100);
+								
+								
                                 buf2[numget] = 0;
                                 debug("FF 1: Finish!\n");
                                 debug("fda = %d, sum = %s\n", fda[0][0], buf2);
@@ -320,19 +331,26 @@ int main(int argc, char *argv[]) {
                             while (1) {
 //                    fgets(user_input_buf,100,stdin);
                                 int rett = gets_s(user_input_buf, f);
+								//printf("%d: ",rett);
                                 if(rett == 0 || rett == -1){
                                     break;
                                 }
                                 if (strncmp(user_input_buf, "Team_", 5) == 0) {
+									//puts(user_input_buf);
                                     temp = str2event(user_input_buf, teamArr);
                                     if (temp.holdDay != -1) {
                                         temp.index=next_meeting;
                                         eventArr[next_meeting] = temp;
                                         next_meeting++;
                                         event2str('E', &temp, buf);
+										//printf("main: ");puts(buf);
                                         write(fd[0][1], buf, strlen(buf));
+										write(fd[1][1], buf, strlen(buf));
+										
                                         int numget = read(fda[0][0],buf2,100);
                                         while(numget == 0) numget = read(fda[0][0], buf2, 100);
+										numget = read(fda[1][0],buf2,100);
+                                        while(numget == 0) numget = read(fda[1][0], buf2, 100);
                                         buf2[numget] = 0;
                                  //       debug("2 FF: Finish!\n");
                                  //       debug("fda = %d, sum = %s\n", fda[0][0], buf2);

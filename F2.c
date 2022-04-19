@@ -31,6 +31,7 @@ void sortEventArr() {
 	eventCnt=0;
 	for(i=head; i<tail; ++i){
 		storage[eventCnt++]=eventArr[i];
+		printf("%s\n",eventArr[i].name);
 	}
 
 	//printf("%d %d\n",eventCnt,eventArr[0].index);
@@ -114,9 +115,13 @@ void scheduleAll() {
 	tot[0]=tot[1]=0;
 	int i;
 	sortEventArr();
+	printf("eventCnt=%d\n",eventCnt);
+	for(i=0;i<eventCnt;++i) printf("%d ",sortedEventArr[i]);
+	puts("");
 	for(i=0;i<eventCnt;++i) unhandled[0][tot[0]++]=sortedEventArr[i];
 	int dr=0;
 	while(1) {
+		for(i=0;i<tot[dr];++i) printf("%d ",unhandled[dr][i]);puts("");
 		const int L0=10;
 		int curTeam=-1,curHours=0;
 		int moreHandled=0;
@@ -127,16 +132,21 @@ void scheduleAll() {
 				curTeam=eventArr[now].teamID;
 				curHours=0;
 			}
-			if(curHours+eventArr[now].endTime-eventArr[now].startTime>L0) continue;
+			if(curHours+eventArr[now].endTime-eventArr[now].startTime>L0) {
+				unhandled[dr^1][tot[dr^1]++]=now;
+				continue;
+			}
 			if(schedule(now)) {
 				curHours+=eventArr[now].endTime-eventArr[now].startTime;
 				moreHandled=1;
 			}
 			else {
+				//printf("unhandle: %d\n",now);
 				unhandled[dr^1][tot[dr^1]++]=now;
 			}
 		}
 		dr^=1;
+		printf("more?%d\n",moreHandled);
 		if(!moreHandled) break;
 	}
 	tot[dr^1]=0;
@@ -171,7 +181,7 @@ void print(int beginDate,int endDate) {
 	fputs("Date          Start   End     Team     Project\n",out);
 	fputs("===========================================================================\n",out);
 	int i,j;
-	for(i=0;i<18;++i) {
+	for(i=beginDate;i<=endDate;++i) {
 		for(j=0;j<9;++j) {
 			int id=myCalendar[i][j];
 			if(id==-1) continue;
@@ -179,6 +189,28 @@ void print(int beginDate,int endDate) {
 			fprintf(out,"%13s %7s %7s %8s %s\n",toDate[now->holdDay],toTime[now->startTime-9],toTime[now->endTime-9],teamArr[now->teamID].name,now->project);
 		}
 	}
+ 	char send[80],rcv[100];
+	sprintf(send,"P$%s$%d$%d",fileName,beginDate,endDate);
+	fclose(out);
+	for(i=0;i<8;++i) {
+		WRITEC(i);
+/* 		int le=READC(i);
+		printf("C%d: %s\n",i,rcv); */
+		
+		while (1) {
+			// wait ack from C
+			//debug("watr ack from C...\n");
+			int np = READC(i);
+			//debug("get %s from %d\n", rcv, i);
+			if (np <= 0) {
+				continue;
+			}
+			if (rcv[0] == 'D') {
+				break;
+			}
+		}
+	}
+	out=fopen(fileName,"a");
 	fputs("===========================================================================\n",out);
 	fputs("*** Meeting Request–REJECTED ***\n\n",out);
 	fprintf(out,"There are %d requests rejected for the required period.\n\n",rejectCnt);
@@ -187,14 +219,8 @@ void print(int beginDate,int endDate) {
 		fprintf(out, "%d.\t%s %s %s %d\n", i+1,
                            now->name,
                            toDate[now->holdDay],
-                           toTime[now->startTime],
+                           toTime[now->startTime-9],
                            now->endTime - now->startTime);
-	}
- 	char send[80],rcv[10];
-	sprintf(send,"P$%s$%d$%d",fileName,beginDate,endDate);
-	for(i=0;i<8;++i) {
-		WRITEC(i);
-		READC(i);
 	}
 	fclose(out);
 }
@@ -202,6 +228,8 @@ void print(int beginDate,int endDate) {
 event ins2event(char ins[]) {
 	event ret;
 	char* token=strtok(ins,"$");
+	token=strtok(NULL,"$");
+	token=strtok(NULL,"$");
 	ret.index=atoi(token);
 	token=strtok(NULL,"$");
 	ret.teamID=atoi(token);
@@ -221,6 +249,7 @@ event ins2event(char ins[]) {
 team ins2team(char ins[]) {
 	team ret;
 	char* token=strtok(ins,"$");
+	token=strtok(NULL,"$");
 	token=strtok(NULL,"$");
 	ret.index=atoi(token);
 	token=strtok(NULL,"$");
@@ -242,7 +271,7 @@ team ins2team(char ins[]) {
 
 
 int F2main(int ff2f[2][2],int f2ff[2][2]) {
-	puts("HHH");
+	//puts("HHH");
 	close(ff2f[1][1]);
 	close(f2ff[1][0]);
 	//open pipe
@@ -253,6 +282,7 @@ int F2main(int ff2f[2][2],int f2ff[2][2]) {
 			exit(1);
 		}
 	}
+	memset(myCalendar,0xff,sizeof myCalendar);
 	//fork
 	for(i=0;i<8;++i) {
 		retpid=fork();
@@ -275,12 +305,11 @@ int F2main(int ff2f[2][2],int f2ff[2][2]) {
 		close(f2c[i][0]);
 		close(c2f[i][1]);		
 	}
-	memset(myCalendar,0xff,sizeof myCalendar);
 	head=tail=0;
 	rejectCnt=0;
 	printCnt=0;
-	char rcv1[80],send1[]="D";
-	char rcv[80],send[80];
+	char rcv1[100],send1[]="D";
+	char rcv[100],send[80];
 	while(1) {
 		int np=READFF;
 		if(np<=0) {
@@ -289,6 +318,7 @@ int F2main(int ff2f[2][2],int f2ff[2][2]) {
 		}
 		rcv1[np]=0;
 		int sig=rcv1[0];
+		puts(rcv1);
 		switch(sig) {
 			case 'F': {//end
 				send[0]='F';
@@ -318,6 +348,7 @@ int F2main(int ff2f[2][2],int f2ff[2][2]) {
 				token=strtok(NULL,"$");
 				int endDate=atoi(token);
 				while(token!=NULL) token=strtok(NULL,"$");
+				printf("tail: %d\n",tail);
 				scheduleAll();
 				head=tail;
 				print(beginDate,endDate);

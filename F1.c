@@ -395,7 +395,7 @@ int F1main(int GPfd[2][2], int Ffd[2][2]) {
                     sprintf(inbuf, "%d\t%s\t%s\t%s\t%d\n", ++rowNum,
                            eventArr[i].name,
                            toDate[eventArr[i].holdDay],
-                           toTime[eventArr[i].startTime],
+                           toTime[eventArr[i].startTime-9],
                            eventArr[i].endTime - eventArr[i].startTime);
                    write(infd, inbuf, strlen(inbuf));
                 }
