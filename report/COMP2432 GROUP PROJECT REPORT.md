@@ -24,11 +24,13 @@ In this course, we’re required to understand the concepts and theories of oper
 (e) Solving problems in groups and gain collaboration & communication skills;
 
 Finally, using two scheduling algorithms, referring to the First Come First Server and self-design best-performance algorithm, our PMS can satisfy the following requirements:
-	All the six parts and bonus have been implemented
-	Modular design
-	Enhanced flexibility and maintainability
-	The self-design algorithm approaches to reach the overall best performance under research and testing
-![image](https://user-images.githubusercontent.com/72927666/163893030-63b78554-dd5c-43a2-b6be-285f09199c9e.png)
+
+- All the six parts and bonus have been implemented
+- Modular design
+- Enhanced flexibility and maintainability
+- The self-design algorithm approaches to reach the overall best performance under research and testing
+
+<img src="https://user-images.githubusercontent.com/72927666/163893030-63b78554-dd5c-43a2-b6be-285f09199c9e.png" alt="image" style="zoom: 67%;" />
 
 
 ## 2. Scope about OS
@@ -84,7 +86,7 @@ Turbo-Journey uses pipelines for communication among process. Each pipeline is u
 
 ### 3.4. How to work
 
-<img src="https://pic.hanjiaming.com.cn/2022/04/19/be89f32b950d3.png" alt="1650301349789.png" style="zoom:50%;" />
+<img src="https://pic.hanjiaming.com.cn/2022/04/19/1a751c07110ba.png" alt="1650349547182.png" style="zoom:50%;" />
 
 ## 4. Communication Standards
 
@@ -109,7 +111,8 @@ For example, the sheet below is communication standard of F2 -> Cx
 
 Turbo-Journey's first algorithm is very similar to the Process scheduling algorithm FCFS. It is shown in the figure below.
 
-<img src="https://pic.hanjiaming.com.cn/2022/04/19/00c3a42a69750.png" alt="1650302657008.png" style="zoom: 33%;" />
+<img src="https://pic.hanjiaming.com.cn/2022/04/19/8c00fdbeb6b7a.png" alt="1650348459447.png" style="zoom:50%;" />
 
 ## Customized algorithm
 
+<img src="https://pic.hanjiaming.com.cn/2022/04/19/72a164884b965.png" alt="CleanShot 2022-04-19 at 14.09.45@2x.png" style="zoom:50%;" />
