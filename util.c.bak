@@ -51,12 +51,12 @@ event eventArr[200]={
 		// 5 6 7 9 8 0 2 1 4 3
 };
 team teamArr[6]={
-		{0,"team1","project1", 3, 0, {0,0,0,0}},
-		{1,"team2","project2", 4, 0, {0,0,0,0}},
-		{2,"team3","project3", 1, 0, {0,0,0,0}},
-		{3,"team4","project4", 2, 0, {0,0,0,0}},
-		{4,"team5","project5", 8, 0, {0,0,0,0}},
-		{5,"team6","project6", 5, 0, {0,0,0,0}},
+		{0,"team1","project1", 3, 0, {}},
+		{1,"team2","project2", 4, 0, {}},
+		{2,"team3","project3", 1, 0, {}},
+		{3,"team4","project4", 2, 0, {}},
+		{4,"team5","project5", 8, 0, {}},
+		{5,"team6","project6", 5, 0, {}},
 };
 person personArr[9]={
 		{0,"Alan",-1,0},
@@ -84,11 +84,9 @@ person personArr[9]={
 // team teamArr[6]={};
 int myCalendar[20][10];
 
-
-int gets_s(char str[]){
+int gets_s(char* str){
 //    fgets(str, 100, stdin);
 	int c,i;
-    memset(str, 0, strlen(str));
 	for(i=0;(c=getchar())!='\n'&&c!=EOF;++i){
 	    str[i]=c;
     }
@@ -160,15 +158,11 @@ int trySchedule(event *e, int wfd[8][2], int rfd[8][2]){
     sprintf(buf, "T$3$%d$%d$%d$%d$%d$%s$%s", e->index, e->teamID, e->holdDay, e->startTime, e->endTime, e->name, e->project);
     int i;
     int succ = 1;
-    printf("id=%d\n", e->teamID);
     int memberCount = teamArr[e->teamID].memberCount;
-    printf("memberCount = %d\n", teamArr[e->teamID].memberCount);
     for(i = 0; i < memberCount; ++i){
         int c = teamArr[e->teamID].member[i];
-        puts("before log..."); 
         write(wfd[c][1], buf, BUF);
         read(rfd[c][0], buf2, BUF);
-        printf("%d return: %s\n", i, buf2);
         if(buf2[0] == 'Y') continue;
         succ = 0;
         int j;

@@ -3,7 +3,7 @@
 YANG Rongtao	 20
 LIU Qianli			  20
 MA Suizhi			 20
-GENG Longling	20
+GENG Longling	20080439d
 HAN Jiaming		20075519d
 
 Project/ Program name: Turbo-Journey
@@ -11,6 +11,25 @@ Project/ Program name: Turbo-Journey
 ## 1. Introduction
 
 Organizing meetings for multiple people in an organization like a business or a school is often difficult. Perhaps others are busy with other events. This Project contains two algorithms that try to solve the problem of organizing corporate meeting schedules.
+
+This project PolyStar Interior Design Company provides a good training of implementation of a real system used in medium-size or small-size entrepreneurs. Our design of PMS (referred to Turbo-Journey in the following), is a project meeting scheduler, to schedule meetings for different teams and clients, mostly under fixed teams’ & clients’ scenarios. 
+
+In this course, we’re required to understand the concepts and theories of operating system, and its different services and implementations. As Silberschatz et. Al (2018) state, operating system acts as intermediary between the user of a computer and the computer hardware, providing the environment in which a user can execute programs in a convenient and efficient manner. Since this project involved many concepts in OS, such as system calls, process communication, CPU scheduling, we, group06, have gain skills and experience in many aspects as required in the course:
+	Professional knowledge such as:
+(a) Identifying services of different OS;
+(b) Identifying internal structures of OS and write programs using system calls;
+(c) Understanding concepts of process control, communication, memory management, deadlock and synchronization;
+	All-roundness:
+(d) Developing skills in problem solving;
+(e) Solving problems in groups and gain collaboration & communication skills;
+
+Finally, using two scheduling algorithms, referring to the First Come First Server and self-design best-performance algorithm, our PMS can satisfy the following requirements:
+	All the six parts and bonus have been implemented
+	Modular design
+	Enhanced flexibility and maintainability
+	The self-design algorithm approaches to reach the overall best performance under research and testing
+![image](https://user-images.githubusercontent.com/72927666/163893030-63b78554-dd5c-43a2-b6be-285f09199c9e.png)
+
 
 ## 2. Scope about OS
 

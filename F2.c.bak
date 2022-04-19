@@ -224,13 +224,13 @@ void print(int beginDate,int endDate) {
                            toTime[now->startTime],
                            now->endTime - now->startTime);
 	}
- 	char send[80],rcv[10];
+	fclose(out);
+/* 	char send[80],rcv[10];
 	sprintf(send,"P$%d$%d$%d",fileno(out),beginDate,endDate);
 	for(i=0;i<8;++i) {
 		WRITEC(i);
 		READC(i);
-	}
-	fclose(out);
+	} */
 }
 
 event ins2event(char ins[]) {
