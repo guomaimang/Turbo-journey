@@ -340,8 +340,8 @@ int F1main(int GPfd[2][2], int Ffd[2][2]) {
                         continue;
                     }
                     sprintf(inbuf, "%s\t\t%s\t\t%s\t%s\t\t%s\n", toDate[eventArr[eventIndex].holdDay],
-                            toTime[eventArr[eventIndex].startTime],
-                            toTime[eventArr[eventIndex].endTime],
+                            toTime[eventArr[eventIndex].startTime-9],
+                            toTime[eventArr[eventIndex].endTime-9],
                             teamArr[eventArr[eventIndex].teamID].name,
                             teamArr[eventArr[eventIndex].teamID].project);
                     write(infd, inbuf, strlen(inbuf));
@@ -359,6 +359,25 @@ int F1main(int GPfd[2][2], int Ffd[2][2]) {
                 }
             }
 
+
+            // tell all child to print
+            for (i = 0; i < 8; ++i) {
+                sprintf(cbuf[i], "P$%s$%d$%d", fileName, dayStart, dayEnd);
+                write(f1fd[i][1], cbuf[i], strlen(cbuf[i]));
+                while (1) {
+                    // wait ack from C
+                    debug("watr ack from C...\n");
+                    np = read(cfd[i][0], cbuf[i], 101);
+                    debug("get %s from %d\n", cbuf[i], i);
+                    if (np <= 0) {
+                        continue;
+                    }
+                    if (cbuf[i][0] == 'D') {
+                        break;
+                    }
+                }
+            }
+            
             write(infd, "*** Meeting Request–REJECTED ***\n", 35);
 //            sprintf(inbuf, "*** Meeting Request–REJECTED ***\n");
 //            write(infd, inbuf, 101);
@@ -379,25 +398,7 @@ int F1main(int GPfd[2][2], int Ffd[2][2]) {
             write(infd, "========================================================\n", 57);
 //            write(infd, inbuf, 101);
 
-            // tell all child to print
-            for (i = 0; i < 8; ++i) {
-                sprintf(cbuf[i], "P$%s$%d$%d", fileName, dayStart, dayEnd);
-                write(f1fd[i][1], cbuf[i], strlen(cbuf[i]));
-                while (1) {
-                    // wait ack from C
-                    debug("watr ack from C...\n");
-                    np = read(cfd[i][0], cbuf[i], 101);
-                    debug("get %s from %d\n", cbuf[i], i);
-                    if (np <= 0) {
-                        continue;
-                    }
-                    if (cbuf[i][0] == 'D') {
-                        break;
-                    }
-                }
-            }
-            
-            puts("F1: Done");
+            debug("F1: Done\n");
             write(Ffd[0][1], "D", 1);
         }
 
