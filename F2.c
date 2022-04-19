@@ -6,6 +6,9 @@
 
 #include<unistd.h>
 #include<sys/wait.h>
+#include "F3.h"
+#include <fcntl.h>
+#include <sys/stat.h>
 
 /* #define SCHEDULE 'P'
 #define END 'F'
