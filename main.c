@@ -149,7 +149,7 @@ int menu(int *type) {
            "\t3b. \tXXXX (Another algorithm implemented)\n"
            "\t3c. \tYYYY (Attendance Report) (if implemented)\n\n");
     printf("4. \tExit\n\n"
-           "\tEnter an option:");
+           "Enter an option:");
     //scanf("%s", ans);
     gets_s(ans);
     int re = ans[0] - '0';

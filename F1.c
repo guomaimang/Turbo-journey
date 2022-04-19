@@ -303,10 +303,14 @@ int F1main(int GPfd[2][2], int Ffd[2][2]) {
 */
             for(i = 0; i < eventUsage; ++i){
                 event tmp = eventArr[i];
-                if(trySchedule(&eventArr[i], f1fd, cfd) || reschedule(&eventArr[i], f1fd, cfd))
+                if(trySchedule(&eventArr[i], f1fd, cfd) || reschedule(&eventArr[i], f1fd, cfd)){
                     eventSuccess[i] = 1;
+                    debug("Success event: %d\n", i);
+                }
                 else eventArr[i] = tmp;
             }
+
+            debug("F1: schedule done. \n");
 
             // after scheduling, print all event
             dprintf(infd, "*** Project Meeting ***\n");
@@ -326,7 +330,7 @@ int F1main(int GPfd[2][2], int Ffd[2][2]) {
             dprintf(infd, "========================================================\n");
 //            sprintf(inbuf, "========================================================\n");
 //            write(infd, inbuf, 101);
-            for (i = 0; i < 18; ++i) {
+            for (i = dayStart; i <= dayEnd; ++i) {
                 for (j = 0; j < 9; ++j) {
                     int eventIndex = myCalendar[i][j];
                     if (eventIndex == -1) {
@@ -374,11 +378,13 @@ int F1main(int GPfd[2][2], int Ffd[2][2]) {
 
             // tell all child to print
             for (i = 0; i < 8; ++i) {
-                sprintf(cbuf[i], "%d$%d$%d", infd, dayStart, dayEnd);
-                write(f1fd[i][1], f1fd[i], 101);
+                sprintf(cbuf[i], "P$%d$%d$%d", infd, dayStart, dayEnd);
+                write(f1fd[i][1], cbuf[i], 101);
                 while (1) {
                     // wait ack from C
+                    debug("watr ack from C...\n");
                     np = read(cfd[i][0], cbuf[i], 101);
+                    debug("get %s from %d\n", cbuf[i], i);
                     if (np <= 0) {
                         continue;
                     }

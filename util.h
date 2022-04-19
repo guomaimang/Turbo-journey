@@ -1,3 +1,5 @@
+#define debug(ss, args...) fprintf(stderr, ss, ##args)
+
 // 类型编号 1
 typedef struct typePerson{
   int index;

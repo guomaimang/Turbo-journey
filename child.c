@@ -20,22 +20,18 @@ int Child(childInput *input){
         while(readsize == 0) 
             readsize = read(input->f2c[0], buf, BUF); 
         buf[readsize] = 0;
-        char **rem = NULL;
-        char *token = strtok_r(buf, "$", rem);
-        if(token == NULL)
-            return -1;
-        if(token[0] == 'F')
+//        char **rem = NULL;
+//        char *token = strtok_r(buf, "$", rem);
+        if(buf[0] == 'F')
             break;
-        else if(token[0] == 'T'){
+        else if(buf[0] == 'T'){
             //try to add
-            token = strtok_r(NULL, "$", rem);
-            if(token == NULL || token[0] != '3')
-                return -1;
-            else token = strtok_r(NULL, "$", rem);
             int idx;
-            sscanf(token, "%d", &idx);
+            printf("C: buf = %s\n", buf);
+
+            sscanf(buf, "T$3$%d", &idx);
             eventArr[idx].index = idx;
-            sscanf(*rem, "%d$%d$%d$%d$%[^$]$%s", &eventArr[idx].teamID, &eventArr[idx].holdDay, &eventArr[idx].startTime, 
+            sscanf(buf, "T$3$%d$%d$%d$%d$%d$%[^$]$%s", &eventArr[idx].index, &eventArr[idx].teamID, &eventArr[idx].holdDay, &eventArr[idx].startTime, 
                     &eventArr[idx].endTime, eventArr[idx].name, eventArr[idx].project);
             int nowday = eventArr[idx].holdDay;
             int success = 1;
@@ -43,7 +39,7 @@ int Child(childInput *input){
             int ret[idx];
             memset(ret, 0, sizeof(ret));
             for(i = eventArr[idx].startTime; i <eventArr[idx].endTime; ++i){
-                if(myCalendar[nowday][i-9] > 0){
+                if(myCalendar[nowday][i-9] >= 0){
                     success = 0; 
                     ret[myCalendar[nowday][i-9]] = 1;
                 }
@@ -72,7 +68,7 @@ int Child(childInput *input){
                 
                 for(i = eventArr[idx].startTime; i <eventArr[idx].endTime; ++i){
                     int nowevent = myCalendar[nowday][i-9]; 
-                    if(nowevent > 0){
+                    if(nowevent >= 0){
                         int j;
                         for(j=0; j<9; ++j)
                             if(nowevent == myCalendar[nowday][j])
@@ -88,12 +84,12 @@ int Child(childInput *input){
             sprintf(buf2, "D");
             write(input->c2f[1], buf2, BUF);
         }
-        else if(token[0] == 'P'){
-            token = strtok_r(NULL, "$", rem);
+        else if(buf[0] == 'P'){
             int tfd = 0;
-            sscanf(token, "%d", &tfd);
             int d1, d2;
-            sscanf(*rem, "%d$%d", &d1, &d2);
+            sscanf(buf, "P$%d$%d$%d", &tfd, &d1, &d2);
+            debug("C: get buf %s\n", buf);
+            debug("C: get int %d %d %d\n",tfd, d1, d2);
             dprintf(tfd, "===========================================================================\n");
             dprintf(tfd, "Staff: %s\n", me.name);
             dprintf(tfd, "Date\t\t\tStart\t\tEnd\t\tTeam\t\tProject\n");
@@ -104,7 +100,7 @@ int Child(childInput *input){
                int j;
                for(j = 0; j < 9; ++j){
                    int idx = myCalendar[i][j];
-                    if(idx > 0 && !vis[idx]){
+                    if(idx >= 0 && !vis[idx]){
                         vis[idx] = 1;
                         dprintf(tfd, "%s\t\t%s\t\t%s\t%s\t\t%s\n", toDate[i], toTime[eventArr[idx].startTime-9], toTime[eventArr[idx].endTime-9], eventArr[idx].name, eventArr[idx].project);
                     }
@@ -120,16 +116,16 @@ int Child(childInput *input){
 //            sscanf(*rem, "%d$%d$%d$%s", &me.index, &me.manageTeam, &me.asMember, me.name);
  //           write(input->c2f[1], "D", 1);
 //        }
-        else if(token[0] == 'R'){
+        else if(buf[0] == 'R'){
             int xx, yy;
-            sscanf(*rem, "%d$%d", &xx, &yy);
+            sscanf(buf, "R$%d$%d", &xx, &yy);
             int i;
             int anss = 0;
             int vis[200] = {0};
             for(i = xx; i <= yy; ++i){
                int j;
                for(j = 0; j < 9; ++j){
-                    if(myCalendar[i][j] > 0 && !vis[myCalendar[i][j]]){
+                    if(myCalendar[i][j] >= 0 && !vis[myCalendar[i][j]]){
                         vis[myCalendar[i][j]] = 1;
                         ++anss;
                     }

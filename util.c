@@ -4,6 +4,7 @@
 #include <unistd.h>
 #include "util.h"
 
+
 char toDate[18][11] = {
     "2022-04-25",   
     "2022-04-26",   
@@ -119,7 +120,7 @@ int reschedule(event* e, int wfd[8][2], int rfd[8][2]){
         e->startTime = i;
         e->endTime = i + dur;
         if (trySchedule(e, wfd, rfd) == 1) {
-            myCalendar[e->holdDay][e->startTime] = e->index;
+            myCalendar[e->holdDay][e->startTime-9] = e->index;
             return 1;
         }
     }
@@ -127,7 +128,7 @@ int reschedule(event* e, int wfd[8][2], int rfd[8][2]){
         e->startTime = i;
         e->endTime = i + dur;
         if (trySchedule(e, wfd, rfd) == 1) {
-            myCalendar[e->holdDay][e->startTime] = e->index;
+            myCalendar[e->holdDay][e->startTime-9] = e->index;
             return 1;
         }
     }
@@ -137,7 +138,7 @@ int reschedule(event* e, int wfd[8][2], int rfd[8][2]){
             e->startTime = i;
             e->endTime = i + dur;
             if (trySchedule(e, wfd, rfd) == 1) {
-                myCalendar[e->holdDay][e->startTime] = e->index;
+                myCalendar[e->holdDay][e->startTime-9] = e->index;
                 return 1;
             }
         }
@@ -146,7 +147,7 @@ int reschedule(event* e, int wfd[8][2], int rfd[8][2]){
             e->startTime = i;
             e->endTime = i + dur;
             if (trySchedule(e, wfd, rfd) == 1) {
-                myCalendar[e->holdDay][e->startTime] = e->index;
+                myCalendar[e->holdDay][e->startTime-9] = e->index;
                 return 1;
             }
         }
@@ -160,15 +161,16 @@ int trySchedule(event *e, int wfd[8][2], int rfd[8][2]){
     sprintf(buf, "T$3$%d$%d$%d$%d$%d$%s$%s", e->index, e->teamID, e->holdDay, e->startTime, e->endTime, e->name, e->project);
     int i;
     int succ = 1;
-    printf("id=%d\n", e->teamID);
+    debug("trySchedule: buf = %s\n", buf);
+    debug("trySchedule: id=%d\n", e->teamID);
     int memberCount = teamArr[e->teamID].memberCount;
-    printf("memberCount = %d\n", teamArr[e->teamID].memberCount);
+    debug("F1: memberCount = %d\n", teamArr[e->teamID].memberCount);
     for(i = 0; i < memberCount; ++i){
         int c = teamArr[e->teamID].member[i];
-        puts("before log..."); 
+        debug("c=%d, buf=%s\n", c, buf); 
         write(wfd[c][1], buf, BUF);
         read(rfd[c][0], buf2, BUF);
-        printf("%d return: %s\n", i, buf2);
+        debug("%d return: %s\n", i, buf2);
         if(buf2[0] == 'Y') continue;
         succ = 0;
         int j;
@@ -180,6 +182,8 @@ int trySchedule(event *e, int wfd[8][2], int rfd[8][2]){
         return 0;
     }
     if(succ){
+        myCalendar[e->holdDay][e->startTime-9] = e->index;
+        debug("trySchedule: day=%d time=%d index=%d\n", e->holdDay, e->startTime, e->index);
         for(i=0; i<memberCount; ++i){
             int c = teamArr[e->teamID].member[i];
             write(wfd[c][1], "A", 1);
