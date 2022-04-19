@@ -24,11 +24,13 @@ In this course, we’re required to understand the concepts and theories of oper
 (e) Solving problems in groups and gain collaboration & communication skills;
 
 Finally, using two scheduling algorithms, referring to the First Come First Server and self-design best-performance algorithm, our PMS can satisfy the following requirements:
-	All the six parts and bonus have been implemented
-	Modular design
-	Enhanced flexibility and maintainability
-	The self-design algorithm approaches to reach the overall best performance under research and testing
-![image](https://user-images.githubusercontent.com/72927666/163893030-63b78554-dd5c-43a2-b6be-285f09199c9e.png)
+
+- All the six parts and bonus have been implemented
+- Modular design
+- Enhanced flexibility and maintainability
+- The self-design algorithm approaches to reach the overall best performance under research and testing
+
+<img src="https://user-images.githubusercontent.com/72927666/163893030-63b78554-dd5c-43a2-b6be-285f09199c9e.png" alt="image" style="zoom: 67%;" />
 
 
 ## 2. Scope about OS
