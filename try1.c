@@ -199,6 +199,7 @@ void scheduleAll() {
 void print(int beginDate,int endDate) {
 	FILE *out;
 	out=fopen("Schedule_MINE.txt","w");
+	puts("OPENED!");
 	fputs("*** Project Meeting ***\n\n",out);
 	fputs("Algorithm used: MINE\n",out);
 	fprintf(out,"PeriodL %s to %s\n\n",toDate[beginDate],toDate[endDate]);
@@ -271,6 +272,7 @@ team ins2team(char ins[]) {
 		ret.member[i]=atoi(token);
 		token=strtok(NULL,"$");
 	}
+	printf("%d\n",ret.memberCount);
 	return ret;
 }
 
