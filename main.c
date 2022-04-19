@@ -218,9 +218,6 @@ int main(int argc, char *argv[]) {
             if(i == 0){
                 F1main(fd, fda);
             }
-			else {
-				F1main(fd,fda);
-			}
             exit(0);
         }
     }
@@ -271,7 +268,8 @@ int main(int argc, char *argv[]) {
                             continue;
                         personArr[temp.manager].manageTeam = next_team;
                         temp.index=next_team;
-                        write(fd[0][1], team2str('G',&temp,buf), BUF);
+                        team2str('G', &temp, buf);
+                        write(fd[0][1], buf, strlen(buf));
 
                         int numget = read(fda[0][0],buf2,100);
                         while(numget == 0) numget = read(fda[0][0], buf2, 100);
@@ -299,7 +297,8 @@ int main(int argc, char *argv[]) {
                             if (temp.holdDay != -1) {
                                 temp.index=next_meeting;
                                 eventArr[next_meeting] = temp;
-                                write(fd[0][1], event2str('E',&temp,buf), BUF);
+                                event2str('E', &temp, buf);
+                                write(fd[0][1], buf, strlen(buf));
                                 int numget = read(fda[0][0],buf2,100);
                                 while(numget == 0) numget = read(fda[0][0], buf2, 100);
                                 buf2[numget] = 0;
@@ -330,7 +329,8 @@ int main(int argc, char *argv[]) {
                                         temp.index=next_meeting;
                                         eventArr[next_meeting] = temp;
                                         next_meeting++;
-                                        write(fd[0][1], event2str('E', &temp, buf), BUF);
+                                        event2str('E', &temp, buf);
+                                        write(fd[0][1], buf, strlen(buf));
                                         int numget = read(fda[0][0],buf2,100);
                                         while(numget == 0) numget = read(fda[0][0], buf2, 100);
                                         buf2[numget] = 0;
@@ -354,7 +354,7 @@ int main(int argc, char *argv[]) {
                     getPrintCommand(user_input_buf, buf);
                     if(input_type == 1){
                     //    puts("FF: Start Sending...");
-                        write(fd[0][1], buf, BUF);
+                        write(fd[0][1], buf, strlen(buf));
                         strcpy(buf2, "");
                         int numget = read(fda[0][0],buf2,100);
                         while(numget == 0) numget = read(fda[0][0], buf2, 100);

@@ -2,6 +2,8 @@
 #include <stdlib.h>
 #include <string.h>
 #include <unistd.h>
+#include <fcntl.h>
+#include <sys/stat.h>
 #include "child.h"
 #include "util.h"
 
@@ -47,7 +49,7 @@ int Child(childInput *input){
             char buf2[BUF] = "";
             if(success){
                 sprintf(buf2, "Y");
-                write(input->c2f[1], buf2, BUF);
+                write(input->c2f[1], buf2, 1);
             }
             else{
                 sprintf(buf2, "N$50$");
@@ -60,7 +62,7 @@ int Child(childInput *input){
                 sprintf(buf2 + 5, "%d", sscnt);
                 for(i=0; i<sscnt; ++i)
                     sprintf(buf2 + strlen(buf2), "$%d", ss[i]);
-                write(input->c2f[1], buf2, BUF);
+                write(input->c2f[1], buf2, strlen(buf2));
             }
             readsize = read(input->f2c[0], buf, BUF);
             buf[readsize] = 0;
@@ -82,18 +84,24 @@ int Child(childInput *input){
 
             }else return -1;
             sprintf(buf2, "D");
-            write(input->c2f[1], buf2, BUF);
+            write(input->c2f[1], buf2, 1);
         }
         else if(buf[0] == 'P'){
             int tfd = 0;
             int d1, d2;
-            sscanf(buf, "P$%d$%d$%d", &tfd, &d1, &d2);
+            char fileName[30] = "";
+            sscanf(buf, "P$%[^$]$%d$%d", fileName, &d1, &d2);
+            tfd = open(fileName, O_WRONLY | O_APPEND);
             debug("C: get buf %s\n", buf);
             debug("C: get int %d %d %d\n",tfd, d1, d2);
-            dprintf(tfd, "===========================================================================\n");
-            dprintf(tfd, "Staff: %s\n", me.name);
-            dprintf(tfd, "Date\t\t\tStart\t\tEnd\t\tTeam\t\tProject\n");
-            dprintf(tfd, "===========================================================================\n");
+            write(tfd, "===========================================================================\n", 76);
+            char wbuf[BUF] = "";
+            sprintf(wbuf, "Staff: %s\n", me.name);
+            write(tfd, wbuf, strlen(wbuf));
+            sprintf(wbuf, "Date\t\t\tStart\t\tEnd\t\tTeam\t\tProject\n");
+            write(tfd, wbuf, strlen(wbuf));
+            sprintf(wbuf, "===========================================================================\n");
+            write(tfd, wbuf, strlen(wbuf));
             int i;
             int vis[200] = {0};
             for(i = d1; i <= d2; ++i){
@@ -102,11 +110,12 @@ int Child(childInput *input){
                    int idx = myCalendar[i][j];
                     if(idx >= 0 && !vis[idx]){
                         vis[idx] = 1;
-                        dprintf(tfd, "%s\t\t%s\t\t%s\t%s\t\t%s\n", toDate[i], toTime[eventArr[idx].startTime-9], toTime[eventArr[idx].endTime-9], eventArr[idx].name, eventArr[idx].project);
+                        sprintf(wbuf, "%s\t\t%s\t\t%s\t%s\t\t%s\n", toDate[i], toTime[eventArr[idx].startTime-9], toTime[eventArr[idx].endTime-9], eventArr[idx].name, eventArr[idx].project);
+                        write(tfd, wbuf, strlen(wbuf));
                     }
                }
             }
-            dprintf(tfd, "\n");
+            write(tfd, "\n", 1);
             write(input->c2f[1], "D", 1);
         }
 //        else if(token[0] == 'I'){

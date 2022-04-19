@@ -120,6 +120,8 @@ int F1main(int GPfd[2][2], int Ffd[2][2]) {
         close(f1fd[i][0]);  // close read pip of F1
         close(cfd[i][1]);   // close write pipe of child
     }
+
+    int printTimes = 0;
     while (1) {
         // get message from FF
         // sleep(1);
@@ -212,9 +214,11 @@ int F1main(int GPfd[2][2], int Ffd[2][2]) {
 
         // Print: Tell every child to print their calendar
         else if (signal == 'P') {
+            char fileName[30] = "";
+            sprintf(fileName, "G06_FCFS_Schd_%02d.dat", ++printTimes);
             // Init file
-            int infd = open("Schedule_FCFS.txt", O_WRONLY | O_CREAT | O_TRUNC, 0666);
-            char inbuf[101];
+            int infd = open(fileName, O_WRONLY | O_CREAT | O_TRUNC, 0666);
+            char inbuf[BUF] = "";
             if (infd < 0) {
                 printf("Error in opening input file\n");
                 exit(1);
@@ -313,21 +317,20 @@ int F1main(int GPfd[2][2], int Ffd[2][2]) {
             debug("F1: schedule done. \n");
 
             // after scheduling, print all event
-            dprintf(infd, "*** Project Meeting ***\n");
+            write(infd, "*** Project Meeting ***\n", 24);
 //            sprintf(inbuf, "*** Project Meeting ***\n");
 //            write(infd, inbuf, 101);
-            dprintf(infd, "\nAlgorithm used: FCFS\n");
+            write(infd, "\nAlgorithm used: FCFS\n", 22);
 //            sprintf(inbuf, "\nAlgorithm used: FCFS\n");
 //            write(infd, inbuf, 101);
 
 //
-            dprintf(infd, "Period: %s to %s\n", toDate[dayStart], toDate[dayEnd]);
-//            sprintf(inbuf, "Period: %s to %s\n", toDate[dayStart], toDate[dayEnd]);
-//            write(infd, inbuf, 101);
-            dprintf(infd, "\nDate\t\t\tStart\t\tEnd\t\tTeam\t\tProject\n");
+            sprintf(inbuf, "Period: %s to %s\n", toDate[dayStart], toDate[dayEnd]);
+            write(infd, inbuf, strlen(inbuf));
+            write(infd, "\nDate\t\t\tStart\t\tEnd\t\tTeam\t\tProject\n", 34);
 //            sprintf(inbuf, "\nDate          Start    End      Team          Project   \n");
 //            write(infd, inbuf, 101);
-            dprintf(infd, "========================================================\n");
+            write(infd, "========================================================\n", 57);
 //            sprintf(inbuf, "========================================================\n");
 //            write(infd, inbuf, 101);
             for (i = dayStart; i <= dayEnd; ++i) {
@@ -336,16 +339,16 @@ int F1main(int GPfd[2][2], int Ffd[2][2]) {
                     if (eventIndex == -1) {
                         continue;
                     }
-                    dprintf(infd, "%s\t\t%s\t\t%s\t%s\t\t%s\n", toDate[eventArr[eventIndex].holdDay],
+                    sprintf(inbuf, "%s\t\t%s\t\t%s\t%s\t\t%s\n", toDate[eventArr[eventIndex].holdDay],
                             toTime[eventArr[eventIndex].startTime],
                             toTime[eventArr[eventIndex].endTime],
                             teamArr[eventArr[eventIndex].teamID].name,
                             teamArr[eventArr[eventIndex].teamID].project);
-               //     write(infd, inbuf, 101);
+                    write(infd, inbuf, strlen(inbuf));
                 }
 
             }
-            dprintf(infd, "========================================================\n");
+            write(infd, "========================================================\n", 57);
 //            write(infd, inbuf, 101);
 
             // count rejected events
@@ -356,30 +359,30 @@ int F1main(int GPfd[2][2], int Ffd[2][2]) {
                 }
             }
 
-            dprintf(infd, "*** Meeting Request–REJECTED ***\n");
+            write(infd, "*** Meeting Request–REJECTED ***\n", 35);
 //            sprintf(inbuf, "*** Meeting Request–REJECTED ***\n");
 //            write(infd, inbuf, 101);
-            dprintf(infd, "\nThere are %d requests rejected for the required period.\n\n", rejectCount);
-//            write(infd, inbuf, 101);
+            sprintf(inbuf, "\nThere are %d requests rejected for the required period.\n\n", rejectCount);
+            write(infd, inbuf, strlen(inbuf));
             int rowNum = 0;
             for (i = 0; i < eventUsage; ++i) {
                 if (eventSuccess[i] == 0) {
-                    dprintf(infd, "%d\t%s\t%s\t%s\t%d\n", ++rowNum,
+                    sprintf(inbuf, "%d\t%s\t%s\t%s\t%d\n", ++rowNum,
                            eventArr[i].name,
                            toDate[eventArr[i].holdDay],
                            toTime[eventArr[i].startTime],
                            eventArr[i].endTime - eventArr[i].startTime);
- //                   write(infd, inbuf, 101);
+                   write(infd, inbuf, strlen(inbuf));
                 }
 
             }
-            dprintf(infd, "========================================================\n");
+            write(infd, "========================================================\n", 57);
 //            write(infd, inbuf, 101);
 
             // tell all child to print
             for (i = 0; i < 8; ++i) {
-                sprintf(cbuf[i], "P$%d$%d$%d", infd, dayStart, dayEnd);
-                write(f1fd[i][1], cbuf[i], 101);
+                sprintf(cbuf[i], "P$%s$%d$%d", fileName, dayStart, dayEnd);
+                write(f1fd[i][1], cbuf[i], strlen(cbuf[i]));
                 while (1) {
                     // wait ack from C
                     debug("watr ack from C...\n");
@@ -403,7 +406,7 @@ int F1main(int GPfd[2][2], int Ffd[2][2]) {
             for (i = 0; i < 8; ++i) {
                 cbuf[i][0] = 'F';
                 cbuf[i][1] = 0;
-                write(cfd[i][1], cbuf, BUF);
+                write(cfd[i][1], cbuf, 1);
             }
             break;
 			//ack FF
