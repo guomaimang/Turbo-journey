@@ -69,8 +69,8 @@ void sortEventArr() {
 	}
 
 	int i, j;
-	printf("%d %d\n",eventCnt,eventArr[0].index);
-	for(i=0;i<eventCnt;++i) printEvent(&eventArr[i]);
+	//printf("%d %d\n",eventCnt,eventArr[0].index);
+	//for(i=0;i<eventCnt;++i) printEvent(&eventArr[i]);
 	puts("");
 	for(i=1; i<eventCnt; i++){
 		event new_event = storage[i];
@@ -210,7 +210,7 @@ void print(int beginDate,int endDate) {
 			int id=myCalendar[i][j];
 			if(id==-1) continue;
 			event* now=&eventArr[id];
-			fprintf(out,"%13s %7s %7s %8s %s",toDate[now->holdDay],toTime[now->startTime-9],toTime[now->endTime-9],teamArr[now->teamID].name,now->project);
+			fprintf(out,"%13s %7s %7s %8s %s\n",toDate[now->holdDay],toTime[now->startTime-9],toTime[now->endTime-9],teamArr[now->teamID].name,now->project);
 		}
 	}
 	fputs("===========================================================================\n",out);
@@ -224,13 +224,13 @@ void print(int beginDate,int endDate) {
                            toTime[now->startTime],
                            now->endTime - now->startTime);
 	}
-	
-	char send[80],rcv[10];
-	sprintf(send,"P$%d$%d$%d",_fileno(out),beginDate,endDate);
+	fclose(out);
+/* 	char send[80],rcv[10];
+	sprintf(send,"P$%d$%d$%d",fileno(out),beginDate,endDate);
 	for(i=0;i<8;++i) {
 		WRITEC(i);
 		READC(i);
-	}
+	} */
 }
 
 event ins2event(char ins[]) {
@@ -289,7 +289,7 @@ int F2main(int ff2f[2][2],int f2ff[2][2]) {
 	//fork
 	for(i=0;i<8;++i) {
 		retpid=fork();
-		if(retpid>0) {
+		if(retpid<0) {
 			puts("F2: Fork fail!");
 			exit(1);
 		}
@@ -301,8 +301,8 @@ int F2main(int ff2f[2][2],int f2ff[2][2]) {
 			break;
 		}
 	}
-#define WRITEFF write(f2ff[1],send1,strlen(send1))
-#define READFF read(ff2f[0],rcv1,80)
+#define WRITEFF write(f2ff[1][1],send1,strlen(send1))
+#define READFF read(ff2f[1][0],rcv1,80)
 	//for parent
 	for(i=0;i<8;++i) {
 		close(f2c[i][0]);
@@ -314,7 +314,7 @@ int F2main(int ff2f[2][2],int f2ff[2][2]) {
 	while(1) {
 		int np=READFF;
 		if(np<=0) {
-			puts("Error!")
+			puts("Error!");
 			continue;
 		}
 		rcv1[np]=0;
