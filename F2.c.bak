@@ -199,9 +199,9 @@ void print(int beginDate,int endDate) {
 		
 		while (1) {
 			// wait ack from C
-			//debug("watr ack from C...\n");
+			debug("watr ack from C...\n");
 			int np = READC(i);
-			//debug("get %s from %d\n", rcv, i);
+			debug("get %s from %d\n", rcv, i);
 			if (np <= 0) {
 				continue;
 			}

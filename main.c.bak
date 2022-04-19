@@ -331,19 +331,19 @@ int main(int argc, char *argv[]) {
                             while (1) {
 //                    fgets(user_input_buf,100,stdin);
                                 int rett = gets_s(user_input_buf, f);
-								//printf("%d: ",rett);
+								printf("%d: ",rett);
                                 if(rett == 0 || rett == -1){
                                     break;
                                 }
                                 if (strncmp(user_input_buf, "Team_", 5) == 0) {
-									//puts(user_input_buf);
+									puts(user_input_buf);
                                     temp = str2event(user_input_buf, teamArr);
                                     if (temp.holdDay != -1) {
                                         temp.index=next_meeting;
                                         eventArr[next_meeting] = temp;
                                         next_meeting++;
                                         event2str('E', &temp, buf);
-										//printf("main: ");puts(buf);
+										printf("main: ");puts(buf);
                                         write(fd[0][1], buf, strlen(buf));
 										write(fd[1][1], buf, strlen(buf));
 										
@@ -362,10 +362,6 @@ int main(int argc, char *argv[]) {
                             //fflush(stdin);
                         }
                         else if(input_type == 3){
-                            write(fd[0][1], "B", 1);
-                            int numget = read(fda[0][0],buf2,100);
-                            while(numget == 0) numget = read(fda[0][0], buf2, 100);
-                            
                         }
                     }
                     break;
@@ -389,9 +385,6 @@ int main(int argc, char *argv[]) {
                         while(numget == 0) numget = read(fda[1][0], buf2, 100);
                         buf2[numget] = 0;
                     }else if(input_type == 3){                    
-                        write(fd[0][1], "R", 1);
-                        int numget = read(fda[0][0],buf2,100);
-                        while(numget == 0) numget = read(fda[0][0], buf2, 100);
                     }
                     //                对用户输入进行转义，之后进行输出
                     //                do part 3

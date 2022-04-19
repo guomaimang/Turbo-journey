@@ -118,7 +118,7 @@ int Child(childInput *input){
             write(tfd, "\n", 1);
             close(tfd);
             write(input->c2f[1], "D", 1);
-			//puts("finished");
+			puts("finished");
         }
 //        else if(token[0] == 'I'){
 //            token = strtok_r(NULL, "$", rem);
