@@ -151,7 +151,7 @@ int menu(int *type) {
     printf("4. \tExit\n\n"
            "Enter an option:");
     //scanf("%s", ans);
-    gets_s(ans);
+    gets_s(ans, stdin);
     int re = ans[0] - '0';
     if(re == 2 || re == 3){
         if(strlen(ans) != 2)
@@ -244,7 +244,7 @@ int main(int argc, char *argv[]) {
 //                    printf("Input is: %s\n", user_input_buf);
                     while (1) {
                         printf("Enter > ");
-                        gets_s(user_input_buf);
+                        gets_s(user_input_buf, stdin);
                         if(user_input_buf[0] == '0')
                             break;
                         team temp = {0};
@@ -274,8 +274,6 @@ int main(int argc, char *argv[]) {
                         int numget = read(fda[0][0],buf2,100);
                         while(numget == 0) numget = read(fda[0][0], buf2, 100);
                         buf2[numget] = 0;
-                        puts("FF 0: Finish!");
-                        printf("numget=%d fda = %d, sum = %s\n", numget, fda[0][0], buf2);
                         strcpy(buf,"");
                         teamArr[next_team++] = temp;
                         printf("Team \"%s\" for project \"%s\" is created\n",temp.name,temp.project);
@@ -289,7 +287,7 @@ int main(int argc, char *argv[]) {
                         printf("Enter > ");
 //                        getchar();
 //                    fgets(user_input_buf,100,stdin);
-                        gets_s(user_input_buf);
+                        gets_s(user_input_buf, stdin);
                         if(user_input_buf[0] - '0' == 0) break;
                         printf("Input is: %s\n", user_input_buf);
                         if (input_type == 1) {
@@ -303,7 +301,7 @@ int main(int argc, char *argv[]) {
                                 while(numget == 0) numget = read(fda[0][0], buf2, 100);
                                 buf2[numget] = 0;
                                 debug("FF 1: Finish!\n");
-                                printf("fda = %d, sum = %s\n", fda[0][0], buf2);
+                                debug("fda = %d, sum = %s\n", fda[0][0], buf2);
                                 next_meeting++;
 //                                print_event(temp, personArr);
                             } else {
@@ -312,18 +310,17 @@ int main(int argc, char *argv[]) {
                             continue;
                         }
                         else if(input_type == 2){
-                            int f = open(user_input_buf, O_RDONLY);
-                            if (f == -1) {
+                            FILE* f = fopen(user_input_buf, "r");
+                            if (f == NULL) {
                                 printf("There is no such file. Please try again.\n");
                                 continue;
                             }
-                            int stdfd = dup(0);
-                            dup2(f, 0);
                             while (1) {
 //                    fgets(user_input_buf,100,stdin);
-                                int rett = gets_s(user_input_buf);
-                                if(rett == 0 || rett == -1)
+                                int rett = gets_s(user_input_buf, f);
+                                if(rett == 0 || rett == -1){
                                     break;
+                                }
                                 if (strncmp(user_input_buf, "Team_", 5) == 0) {
                                     temp = str2event(user_input_buf, teamArr);
                                     if (temp.holdDay != -1) {
@@ -341,7 +338,8 @@ int main(int argc, char *argv[]) {
                                     }
                                 }
                             }
-                            dup2(stdfd, 0);
+                            fclose(f);
+                            //fflush(stdin);
                         }
                         else if(input_type == 3){
                         }
@@ -351,7 +349,7 @@ int main(int argc, char *argv[]) {
 //                    getchar();
 //                    fgets(user_input_buf,100,stdin);
                     printf("Enter > ");
-                    gets_s(user_input_buf);
+                    gets_s(user_input_buf, stdin);
                     getPrintCommand(user_input_buf, buf);
                     if(input_type == 1){
                     //    puts("FF: Start Sending...");
@@ -360,8 +358,6 @@ int main(int argc, char *argv[]) {
                         int numget = read(fda[0][0],buf2,100);
                         while(numget == 0) numget = read(fda[0][0], buf2, 100);
                         buf2[numget] = 0;
-                        puts("FF: Finish!");
-                        printf("fda = %d, sum = %s\n", fda[0][0], buf2);
                     }else if(input_type == 2){
                     }else if(input_type == 3){                    
                     }

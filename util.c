@@ -86,11 +86,11 @@ person personArr[9]={
 int myCalendar[20][10];
 
 
-int gets_s(char str[]){
+int gets_s(char str[], FILE* f){
 //    fgets(str, 100, stdin);
 	int c,i;
     memset(str, 0, strlen(str));
-	for(i=0;(c=getchar())!='\n'&&c!=EOF;++i){
+	for(i=0;(c=getc(f))!='\n'&&c!=EOF;++i){
 	    str[i]=c;
     }
 	str[i]=0;

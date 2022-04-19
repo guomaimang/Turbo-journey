@@ -1,3 +1,4 @@
+#include <stdio.h>
 #define debug(ss, args...) fprintf(stderr, ss, ##args)
 
 // 类型编号 1
@@ -49,4 +50,4 @@ extern int trySchedule(event *e, int wfd[8][2], int rfd[8][2]);
 extern int reschedule(event* e, int wfd[8][2], int rfd[8][2]);
 extern char* event2str(char sig,event *e,char str[]);
 extern char* team2str(char sig,team *t,char str[]);
-extern int gets_s(char* str);
+extern int gets_s(char* str, FILE* f);
