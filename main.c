@@ -302,7 +302,7 @@ int main(int argc, char *argv[]) {
                                 int numget = read(fda[0][0],buf2,100);
                                 while(numget == 0) numget = read(fda[0][0], buf2, 100);
                                 buf2[numget] = 0;
-                                puts("FF 1: Finish!");
+                                debug("FF 1: Finish!\n");
                                 printf("fda = %d, sum = %s\n", fda[0][0], buf2);
                                 next_meeting++;
 //                                print_event(temp, personArr);
@@ -312,12 +312,13 @@ int main(int argc, char *argv[]) {
                             continue;
                         }
                         else if(input_type == 2){
-                            int stdfd = dup(0);
                             int f = open(user_input_buf, O_RDONLY);
                             if (f == -1) {
                                 printf("There is no such file. Please try again.\n");
                                 continue;
                             }
+                            int stdfd = dup(0);
+                            dup2(f, 0);
                             while (1) {
 //                    fgets(user_input_buf,100,stdin);
                                 int rett = gets_s(user_input_buf);
@@ -334,8 +335,8 @@ int main(int argc, char *argv[]) {
                                         int numget = read(fda[0][0],buf2,100);
                                         while(numget == 0) numget = read(fda[0][0], buf2, 100);
                                         buf2[numget] = 0;
-                                        puts("2 FF: Finish!");
-                                        printf("fda = %d, sum = %s\n", fda[0][0], buf2);
+                                 //       debug("2 FF: Finish!\n");
+                                 //       debug("fda = %d, sum = %s\n", fda[0][0], buf2);
 //                                      print_event(temp, personArr);
                                     }
                                 }
