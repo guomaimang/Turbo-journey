@@ -8,5 +8,5 @@ if [ -n "$1" ]; then
         gcc main.c util.c child.c F1.c -o main
     fi
 else
-    gcc main.c util.c child.c F1.c F3.c -o main && ./main
+    gcc main.c util.c child.c F1.c F2.c F3.c -o main && ./main
 fi
