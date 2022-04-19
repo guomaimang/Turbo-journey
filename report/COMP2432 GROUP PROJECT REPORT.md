@@ -15,13 +15,15 @@ Organizing meetings for multiple people in an organization like a business or a 
 This project PolyStar Interior Design Company provides a good training of implementation of a real system used in medium-size or small-size entrepreneurs. Our design of PMS (referred to Turbo-Journey in the following), is a project meeting scheduler, to schedule meetings for different teams and clients, mostly under fixed teams’ & clients’ scenarios. 
 
 In this course, we’re required to understand the concepts and theories of operating system, and its different services and implementations. As Silberschatz et. Al (2018) state, operating system acts as intermediary between the user of a computer and the computer hardware, providing the environment in which a user can execute programs in a convenient and efficient manner. Since this project involved many concepts in OS, such as system calls, process communication, CPU scheduling, we, group06, have gain skills and experience in many aspects as required in the course:
-	Professional knowledge such as:
-(a) Identifying services of different OS;
-(b) Identifying internal structures of OS and write programs using system calls;
-(c) Understanding concepts of process control, communication, memory management, deadlock and synchronization;
-	All-roundness:
-(d) Developing skills in problem solving;
-(e) Solving problems in groups and gain collaboration & communication skills;
+
+Professional knowledge such as:
+
+- Identifying services of different OS;
+- Identifying internal structures of OS and write programs using system calls;
+- Understanding concepts of process control, communication, memory management, deadlock and synchronization;
+- All-roundness:
+  - Developing skills in problem solving;
+  - Solving problems in groups and gain collaboration & communication skills;
 
 Finally, using two scheduling algorithms, referring to the First Come First Server and self-design best-performance algorithm, our PMS can satisfy the following requirements:
 
