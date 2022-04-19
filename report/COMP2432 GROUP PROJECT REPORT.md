@@ -111,7 +111,7 @@ For example, the sheet below is communication standard of F2 -> Cx
 
 Turbo-Journey's first algorithm is very similar to the Process scheduling algorithm FCFS. It is shown in the figure below.
 
-<img src="https://pic.hanjiaming.com.cn/2022/04/19/00c3a42a69750.png" alt="1650302657008.png" style="zoom: 33%;" />
+<img src="https://pic.hanjiaming.com.cn/2022/04/19/8c00fdbeb6b7a.png" alt="1650348459447.png" style="zoom:50%;" />
 
 ## Customized algorithm
 
