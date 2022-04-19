@@ -1,23 +1,25 @@
 #include <stdio.h>
+
+//using for debug
 #define debug(ss, args...) fprintf(stderr, ss, ##args)
 
-// 类型编号 1
+
+// struct type 1
 typedef struct typePerson{
-  int index;
-  char name[11];
+  int index; //person index
+  char name[11]; //person name
  
-  int manageTeam; // 管理的团队的团队的id 无则 = -1
-  int asMember;   // 作为几个团队的member？ 限制最多是3个
-  // 一个人最多参与 3 个团队，即 1 <= asManager + asMember <= 3
+  int manageTeam; //which team did he/she manage 
+  int asMember;   //how many team did he paticipate
 }person;
 
-// 类型编号 2
+// struct 2
 typedef struct typeTeam{
   int index;
   char name[11];
   char project[10];
 
-  int manager; 	// 从职员库中索引定位
+  int manager; 	// manager id
   int memberCount; // how many member
   int member[4];
 
