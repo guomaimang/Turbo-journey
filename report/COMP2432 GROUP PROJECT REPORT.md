@@ -86,7 +86,7 @@ Turbo-Journey uses pipelines for communication among process. Each pipeline is u
 
 ### 3.4. How to work
 
-<img src="https://pic.hanjiaming.com.cn/2022/04/19/be89f32b950d3.png" alt="1650301349789.png" style="zoom:50%;" />
+<img src="https://pic.hanjiaming.com.cn/2022/04/19/1a751c07110ba.png" alt="1650349547182.png" style="zoom:50%;" />
 
 ## 4. Communication Standards
 
@@ -115,3 +115,4 @@ Turbo-Journey's first algorithm is very similar to the Process scheduling algori
 
 ## Customized algorithm
 
+<img src="https://pic.hanjiaming.com.cn/2022/04/19/72a164884b965.png" alt="CleanShot 2022-04-19 at 14.09.45@2x.png" style="zoom:50%;" />
