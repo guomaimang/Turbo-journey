@@ -73,8 +73,8 @@ int F1main(int GPfd[2][2], int Ffd[2][2]) {
             myCalendar[i][j] = -1;
         }
     } // init myCalendar[i][j] = -1
-    int eventSuccess[MAXEVENT];
-    for (i = 0; i < MAXEVENT; ++i) {
+    int eventSuccess[eventSize];
+    for (i = 0; i < eventSize; ++i) {
         eventSuccess[i] = -1;
     }
 
@@ -421,7 +421,7 @@ int F1main(int GPfd[2][2], int Ffd[2][2]) {
 			//ack FF
         }
         else if(signal == 'B'){
-            event FinalEventArr[MAXEVENT] = {0};
+            event FinalEventArr[eventSize] = {0};
             int t, d, s, e;
             sscanf(GPbuf[0], "B$%d$%d$%d$%d", &t, &d, &s, &e);
             int cnt = 0;
@@ -438,7 +438,7 @@ int F1main(int GPfd[2][2], int Ffd[2][2]) {
         }else if(signal == 'R'){
             int d1, d2;
             sscanf(GPbuf[0], "R$%d$%d", &d1, &d2);
-            event FinalEventArr[MAXEVENT] = {0};
+            event FinalEventArr[eventSize] = {0};
             int receivedRequests[8] = {0};
             int cnt = 0;
             for(i=0; i<eventUsage; ++i){

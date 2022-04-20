@@ -29,18 +29,20 @@ int Child(childInput *input){
         else if(buf[0] == 'T'){
             //try to add
             int idx;
-            printf("C: buf = %s\n", buf);
+            debug("C: buf = %s\n", buf);
 
             sscanf(buf, "T$3$%d", &idx);
+            debug("C: idx=%d\n", idx);
             eventArr[idx].index = idx;
+            
             sscanf(buf, "T$3$%d$%d$%d$%d$%d$%[^$]$%s", &eventArr[idx].index, &eventArr[idx].teamID, &eventArr[idx].holdDay, &eventArr[idx].startTime, 
                     &eventArr[idx].endTime, eventArr[idx].name, eventArr[idx].project);
             int nowday = eventArr[idx].holdDay;
             int success = 1;
             int i;
-            int ret[idx];
-            memset(ret, 0, sizeof(ret));
+            int ret[eventSize] = {0};
             for(i = eventArr[idx].startTime; i <eventArr[idx].endTime; ++i){
+                debug("i=%d\n", i);
                 if(myCalendar[nowday][i-9] >= 0){
                     success = 0; 
                     ret[myCalendar[nowday][i-9]] = 1;
@@ -48,11 +50,14 @@ int Child(childInput *input){
             }
             char buf2[BUF] = "";
             if(success){
+                debug("Yes\n");
                 sprintf(buf2, "Y");
                 write(input->c2f[1], buf2, 1);
+                debug("write end\n");
             }
             else{
                 sprintf(buf2, "N$50$");
+                debug("No\n");
                 int ss[idx];
                 memset(ss, 0, sizeof(ss));
                 int sscnt = 0;
@@ -60,11 +65,15 @@ int Child(childInput *input){
                     if(ret[i])
                         ss[sscnt++] = i;
                 sprintf(buf2 + 5, "%d", sscnt);
+                debug("Before loop\n");
                 for(i=0; i<sscnt; ++i)
                     sprintf(buf2 + strlen(buf2), "$%d", ss[i]);
                 write(input->c2f[1], buf2, strlen(buf2));
+                debug("write end");
             }
             readsize = read(input->f2c[0], buf, BUF);
+            while(readsize == 0) 
+                readsize = read(input->f2c[0], buf, BUF); 
             buf[readsize] = 0;
             if(buf[0] == 'A'){
                 

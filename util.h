@@ -3,7 +3,13 @@
 #include <stdio.h>
 
 //using for debug
-#define debug(ss, args...) fprintf(stderr, ss, ##args)
+
+// #define DEBUG
+#ifdef DEBUG
+    #define debug(ss, args...) fprintf(stderr, ss, ##args)
+#else
+    #define debug(ss, args...) 
+#endif
 #define eventSize 2010
 #define MAXEVENT 2010
 
