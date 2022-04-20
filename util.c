@@ -80,7 +80,7 @@ person personArr[9] =
     {6, "Gary", -1, 0},
     {7, "Helen", -1, 0},
 };
-event eventArr[200]={};
+event eventArr[MAXEVENT]={};
 //team teamArr[6]={};
 int myCalendar[20][10];
 
