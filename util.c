@@ -103,9 +103,8 @@ char* team2str(char sig,team *t,char str[]){
     return str;
 }
 
-char* event2str(char sig,event *e,char str[]){
+void event2str(char sig,event *e,char* str){
     sprintf(str,"%c$3$%d$%d$%d$%d$%d$%s$%s",sig,e->index,e->teamID,e->holdDay,e->startTime,e->endTime,e->name,e->project);
-    return str;
 }
 
 int reschedule(event* e, int wfd[8][2], int rfd[8][2]){
