@@ -121,9 +121,8 @@ int create_team(char* str,person personArr[9], team *ans) {
         ++ans->memberCount;
         ans->member[i] = member_id(p, personArr);
         personArr[ans->member[i]].asMember+=1;
-        if(personArr[ans->member[i]].manageTeam!=-1){
-            return -1;
-        }else if(personArr[ans->member[i]].asMember>=3){
+        if(personArr[ans->member[i]].asMember>3){
+            printf("this is 2\n");
             return -1;
         }
     }
@@ -164,14 +163,14 @@ int menu(int *type) {
 }
 
 // person personArr[9]={
-//		{0,"Alan",-1,0},
-//		{1,"Billy",-1,0},
-//		{2,"Cathy",-1,0},
-//		{3,"David",-1,0},
-//		{4,"Eva",-1,0},
-//		{5,"Fanny",-1,0},
-//		{6,"Gray",-1,0},
-//		{7,"Helen",-1,0}
+// 		{0,"Alan",-1,0},
+// 		{1,"Billy",-1,0},
+// 		{2,"Cathy",-1,0},
+// 		{3,"David",-1,0},
+// 		{4,"Eva",-1,0},
+// 		{5,"Fanny",-1,0},
+// 		{6,"Gray",-1,0},
+// 		{7,"Helen",-1,0}
 // };
 
 int getPrintCommand(char* user_input, char* pipeDt){
@@ -251,7 +250,7 @@ int main(int argc, char *argv[]) {
                         gets_s(user_input_buf, stdin);
                         if(user_input_buf[0] == '0')
                             break;
-                        team temp = {0};
+                        team temp = {0}; 
                         int valid = create_team(user_input_buf, personArr, &temp);
 //                        print_team(&temp, personArr, personArr);
                         if (next_team >= 5) {
