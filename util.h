@@ -5,6 +5,7 @@
 //using for debug
 #define debug(ss, args...) fprintf(stderr, ss, ##args)
 #define eventSize 2010
+#define MAXEVENT 2010
 
 // struct type 1
 typedef struct typePerson{
