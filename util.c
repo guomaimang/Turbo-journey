@@ -116,16 +116,16 @@ int reschedule(event* e, int wfd[8][2], int rfd[8][2]){
     int i;
     
     for(i = st + 1; i < 10-dur; ++i){
-        e->startTime = i;
-        e->endTime = i + dur;
+        e->startTime = i + 9;
+        e->endTime = i + dur + 9;
         if (trySchedule(e, wfd, rfd) == 1) {
             myCalendar[e->holdDay][e->startTime-9] = e->index;
             return 1;
         }
     }
     for(i = st - 1; i>=0; --i){
-        e->startTime = i;
-        e->endTime = i + dur;
+        e->startTime = i + 9;
+        e->endTime = i + dur + 9;
         if (trySchedule(e, wfd, rfd) == 1) {
             myCalendar[e->holdDay][e->startTime-9] = e->index;
             return 1;
@@ -134,8 +134,8 @@ int reschedule(event* e, int wfd[8][2], int rfd[8][2]){
     for (bias = 1; bias <= 3; ++bias) {
         e->holdDay = day + bias;
         for(i=0; i<10-dur; ++i){
-            e->startTime = i;
-            e->endTime = i + dur;
+            e->startTime = i + 9;
+            e->endTime = i + dur + 9;
             if (trySchedule(e, wfd, rfd) == 1) {
                 myCalendar[e->holdDay][e->startTime-9] = e->index;
                 return 1;
@@ -143,8 +143,8 @@ int reschedule(event* e, int wfd[8][2], int rfd[8][2]){
         }
         e->holdDay = day - bias;
         for(i = 9-dur; i>=0; --i){
-            e->startTime = i;
-            e->endTime = i + dur;
+            e->startTime = i + 9;
+            e->endTime = i + dur + 9;
             if (trySchedule(e, wfd, rfd) == 1) {
                 myCalendar[e->holdDay][e->startTime-9] = e->index;
                 return 1;
