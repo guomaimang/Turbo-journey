@@ -4,7 +4,7 @@
 
 //using for debug
 #define debug(ss, args...) fprintf(stderr, ss, ##args)
-
+#define eventSize 2010
 
 // struct type 1
 typedef struct typePerson{
@@ -41,14 +41,14 @@ typedef struct typeEvent{
 
 }event;
 
-enum {BUF = 255, MAXEVENT = 2000};
-
-extern event eventArr[MAXEVENT];
+extern event eventArr[eventSize];
 extern person personArr[9];
 extern team teamArr[6];
 extern char toDate[18][11];
 extern char toTime[10][6];
 extern int myCalendar[20][10];
+
+enum {BUF = 255};
 
 extern int trySchedule(event *e, int wfd[8][2], int rfd[8][2]);
 extern int reschedule(event* e, int wfd[8][2], int rfd[8][2]);
