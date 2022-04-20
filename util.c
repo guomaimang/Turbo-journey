@@ -188,6 +188,9 @@ int trySchedule(event *e, int wfd[8][2], int rfd[8][2]){
             write(wfd[c][1], "A", 1);
             read(rfd[c][0], buf2, BUF);
         }
-    }else return -1;
+    }else {
+		puts("trySchedule: return -1");
+		return -1;
+	}
     return 1; 
 }
