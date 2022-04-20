@@ -52,13 +52,13 @@ char toTime[10][6] = {
 		{9, 3, 4, 11, 13, "0","0"}, // 4
 		// 5 6 7 9 8 0 2 1 4 3
 };*/
-team teamArr[6]={
+/* team teamArr[6]={
 		{0,"Team_A","Project_A", 0, 1, {0,-1,-1,-1}},
 		{1,"Team_B","project_B", 1, 2, {1,2,-1,-1}},
 		{2,"Team_C","project_C", 3, 2, {3,4,-1,-1}},
 		{3,"Team_D","project_D", 5, 2, {5,6,-1,-1}},
 		{4,"Team_E","project_E", 7, 1, {7,-1,-1,-1}},
-};
+}; */
 /* person personArr[9]={
 		{0,"Alan",-1,0},
 		{1,"Billy",-1,0},
@@ -82,7 +82,7 @@ person personArr[9] =
     {7, "Helen", -1, 0},
 };
 event eventArr[eventSize]={};
-//team teamArr[6]={};
+team teamArr[6]={};
 int myCalendar[20][10];
 
 
