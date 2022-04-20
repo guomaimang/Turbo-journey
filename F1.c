@@ -341,16 +341,17 @@ int F1main(int GPfd[2][2], int Ffd[2][2]) {
 //            write(infd, inbuf, 101);
             for (i = dayStart; i <= dayEnd; ++i) {
                 for (j = 0; j < 9; ++j) {
-                    int eventIndex = myCalendar[i][j];
-                    if (eventIndex == -1) {
-                        continue;
+                    int eventIndex;
+                    for(eventIndex = 0; eventIndex < eventUsage; ++eventIndex){
+                        if(eventArr[eventIndex].holdDay == i && eventArr[eventIndex].startTime - 9 == j){ 
+                            sprintf(inbuf, "%s\t\t%s\t\t%s\t%s\t\t%s\n", toDate[eventArr[eventIndex].holdDay],
+                                    toTime[eventArr[eventIndex].startTime-9],
+                                    toTime[eventArr[eventIndex].endTime-9],
+                                    teamArr[eventArr[eventIndex].teamID].name,
+                                    teamArr[eventArr[eventIndex].teamID].project);
+                            write(infd, inbuf, strlen(inbuf));
+                        }
                     }
-                    sprintf(inbuf, "%s\t\t%s\t\t%s\t%s\t\t%s\n", toDate[eventArr[eventIndex].holdDay],
-                            toTime[eventArr[eventIndex].startTime-9],
-                            toTime[eventArr[eventIndex].endTime-9],
-                            teamArr[eventArr[eventIndex].teamID].name,
-                            teamArr[eventArr[eventIndex].teamID].project);
-                    write(infd, inbuf, strlen(inbuf));
                 }
 
             }
