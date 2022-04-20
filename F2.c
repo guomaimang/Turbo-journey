@@ -186,15 +186,20 @@ void print(int beginDate,int endDate) {
 	fprintf(out,"PeriodL %s to %s\n\n",toDate[beginDate],toDate[endDate]);
 	fputs("Date          Start   End     Team     Project\n",out);
 	fputs("===========================================================================\n",out);
-	int i,j;
-	for(i=beginDate;i<=endDate;++i) {
-		for(j=0;j<9;++j) {
-			int id=myCalendar[i][j];
-			if(id==-1) continue;
-			event* now=&eventArr[id];
-			fprintf(out,"%13s %7s %7s %8s %s\n",toDate[now->holdDay],toTime[now->startTime-9],toTime[now->endTime-9],teamArr[now->teamID].name,now->project);
-		}
+	int i;
+	for(i=0;i<finalCnt;++i) {
+		event* now=&finalEvents[i];
+		if(now->holdDay<beginDate || now->holdDay>endDate) continue;
+		fprintf(out,"%13s %7s %7s %8s %s\n",toDate[now->holdDay],toTime[now->startTime-9],toTime[now->endTime-9],teamArr[now->teamID].name,now->project);
+		
 	}
+	// for(i=beginDate;i<=endDate;++i) {
+	// for(j=0;j<9;++j) {
+			// int id=myCalendar[i][j];
+			// if(id==-1) continue;
+			// event* now=&eventArr[id];
+		// }
+	// }
  	char send[80],rcv[100];
 	sprintf(send,"P$%s$%d$%d",fileName,beginDate,endDate);
 	fclose(out);
@@ -363,19 +368,30 @@ int F2main(int ff2f[2][2],int f2ff[2][2]) {
 				break;
 			}
 			case 'B': {
+				int t, d, s, e;
+				sscanf(rcv1, "B$%d$%d$%d$%d", &t, &d, &s, &e);
 				int stdfd = dup(1);
 				int wfd = open("G06_FCFS_Analysis_Report.txt", O_WRONLY | O_CREAT | O_TRUNC, 0666);
 				dup2(wfd, 1);
-//				ifAvailable(finalEvents, finalCnt);
+				ifAvailable(finalEvents, finalCnt, t, d, s, e);
 				dup2(stdfd, 1);
 				WRITEFF;
 				break;
 			}
 			case 'R': {
+				int d1, d2;
+				sscanf(rcv1, "R$%d$%d", &d1, &d2);
+				int receivedRequests[8] = {0};
+				for(i=0; i<tail; ++i){
+					int j;
+					for(j = 0; j < teamArr[eventArr[i].teamID].memberCount; ++j){
+						++receivedRequests[teamArr[eventArr[i].teamID].member[j]];
+					}
+				}
 				int stdfd = dup(1);
 				int wfd = open("G06_FCFS_Attendance_Report.txt", O_WRONLY | O_CREAT | O_TRUNC, 0666);
 				dup2(wfd, 1);
-		//		printAttendanceReport(finalEvents, finalCnt);
+				printAttendanceReport(finalEvents, finalCnt, d1, d2, receivedRequests);
 				dup2(stdfd, 1);
 				WRITEFF;
 				break;
