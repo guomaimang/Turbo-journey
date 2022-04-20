@@ -333,12 +333,10 @@ int main(int argc, char *argv[]) {
 //                    fgets(user_input_buf,100,stdin);
                                 int rett = gets_s(user_input_buf, f);
 								//printf("%d: ",rett);
-                                if(rett == 0 || rett == -1){
-                                    break;
-                                }
                                 if (strncmp(user_input_buf, "Team_", 5) == 0) {
 									//puts(user_input_buf);
                                     temp = str2event(user_input_buf, teamArr);
+                                    //print_event(temp, personArr);
                                     if (temp.holdDay != -1) {
                                         temp.index=next_meeting;
                                         eventArr[next_meeting] = temp;
@@ -353,10 +351,13 @@ int main(int argc, char *argv[]) {
 										numget = read(fda[1][0],buf2,100);
                                         while(numget == 0) numget = read(fda[1][0], buf2, 100);
                                         buf2[numget] = 0;
-                                 //       debug("2 FF: Finish!\n");
-                                 //       debug("fda = %d, sum = %s\n", fda[0][0], buf2);
+                                    //    debug("2 FF: Finish!\n");
+                                    //    debug("fda = %d, sum = %s\n", fda[0][0], buf2);
 //                                      print_event(temp, personArr);
                                     }
+                                }
+                                if(rett == -1){
+                                    break;
                                 }
                             }
                             fclose(f);
@@ -419,6 +420,11 @@ int main(int argc, char *argv[]) {
         }
         printf("\n~~~~~Thank you, wish you have a nice day!~~~~~\n");
 
+        // close the pipes
+        for (i=0;i<NUM_ALG;i++) {
+            close(fd[i][1]);
+            close(fda[i][0]);
+        }
     }
     return 0;
 }
