@@ -8,7 +8,7 @@
 #include "util.h"
 
 
-int hasmeeting[200];
+int hasmeeting[eventSize];
 
 
 int Child(childInput *input){

@@ -143,13 +143,13 @@ int menu(int *type) {
     printf("2. \tProject Meeting Request\n");
     printf("\t2a. \tSingle input\n"
            "\t2b. \tBatch input\n"
-           "\t2c. \tMeeting Attendance (if implemented)\n\n");
+           "\t2c. \tMeeting Attendance\n\n");
     printf("3. \tPrint Meeting Schedule\n");
     printf("\t3a. \tFCFS YYY1-M1-D1 YYY2-M2-D2 (First Come First Served)\n"
            "\t3b. \tGARR YYY1-M1-D1 YYY2-M2-D2 (Another algorithm implemented)\n"
            "\t3c. \tREPO YYY1-M1-D1 YYY2-M2-D2 (Attendance Report)\n\n");
     printf("4. \tExit\n\n"
-           "Enter an option:");
+           "Enter an option: ");
     //scanf("%s", ans);
     gets_s(ans, stdin);
     int re = ans[0] - '0';

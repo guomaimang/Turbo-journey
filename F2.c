@@ -19,7 +19,7 @@
 int f2c[8][2],c2f[8][2];
 
 int head,tail; // event number
-int sortedEventArr[200],eventCnt;
+int sortedEventArr[eventSize],eventCnt;
 
 // sort by priority
 // sort by endtime
@@ -28,8 +28,8 @@ int sortedEventArr[200],eventCnt;
 // starting from smallest to largest
 // not in-place
 
+event storage[eventSize];
 void sortEventArr() {
-	event storage[200];
 	int i, j;
 	eventCnt=0;
 	for(i=head; i<tail; ++i){
@@ -76,7 +76,7 @@ void sortEventArr() {
 		sortedEventArr[i]=storage[i].index;
 	}
 }
-event finalEvents[200];
+event finalEvents[eventSize];
 int finalCnt;
 // int scheduled[200]={0};
 #define WRITEC(i) write(f2c[i][1],send,strlen(send))
@@ -114,15 +114,15 @@ int schedule(int eventID) {
 	}
 	return flag; */
 }
-int unhandled[2][200],tot[2];
-int rejectCnt,rejectedArr[200];
+int unhandled[2][eventSize],tot[2];
+int rejectCnt,rejectedArr[eventSize];
 void scheduleAll() {
 	tot[0]=tot[1]=0;
 	int i;
 	sortEventArr();
-	printf("eventCnt=%d\n",eventCnt);
-	for(i=0;i<eventCnt;++i) printf("%d ",sortedEventArr[i]);
-	puts("");
+	//printf("eventCnt=%d\n",eventCnt);
+	//for(i=0;i<eventCnt;++i) printf("%d ",sortedEventArr[i]);
+	//puts("");
 	for(i=0;i<eventCnt;++i) unhandled[0][tot[0]++]=sortedEventArr[i];
 	int dr=0;
 	while(1) {
@@ -151,7 +151,7 @@ void scheduleAll() {
 			}
 		}
 		dr^=1;
-		printf("more?%d\n",moreHandled);
+		//printf("more?%d\n",moreHandled);
 		if(!moreHandled) break;
 	}
 	tot[dr^1]=0;
@@ -173,6 +173,7 @@ void scheduleAll() {
 			rejectedArr[rejectCnt++]=now;
 		}
 	}
+	puts("F2: schedule done!");
 }
 int printCnt;
 void print(int beginDate,int endDate) {
@@ -234,6 +235,7 @@ void print(int beginDate,int endDate) {
                            now->endTime - now->startTime);
 	}
 	fclose(out);
+	puts("F2: print done!");
 }
 
 event ins2event(char ins[]) {
@@ -330,7 +332,7 @@ int F2main(int ff2f[2][2],int f2ff[2][2]) {
 		}
 		rcv1[np]=0;
 		int sig=rcv1[0];
-		puts(rcv1);
+		//puts(rcv1);
 		switch(sig) {
 			case 'F': {//end
 				send[0]='F';

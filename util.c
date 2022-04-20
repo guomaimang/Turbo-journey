@@ -5,6 +5,7 @@
 #include "util.h"
 
 
+
 char toDate[18][11] = {
     "2022-04-25",   
     "2022-04-26",   
@@ -80,7 +81,7 @@ person personArr[9] =
     {6, "Gary", -1, 0},
     {7, "Helen", -1, 0},
 };
-event eventArr[200]={};
+event eventArr[eventSize]={};
 //team teamArr[6]={};
 int myCalendar[20][10];
 

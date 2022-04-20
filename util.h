@@ -4,7 +4,7 @@
 
 //using for debug
 #define debug(ss, args...) fprintf(stderr, ss, ##args)
-
+#define eventSize 2010
 
 // struct type 1
 typedef struct typePerson{
@@ -41,7 +41,7 @@ typedef struct typeEvent{
 
 }event;
 
-extern event eventArr[200];
+extern event eventArr[eventSize];
 extern person personArr[9];
 extern team teamArr[6];
 extern char toDate[18][11];
