@@ -22,7 +22,8 @@ event str2event(char *str,team team_list[6]) {
     char *p = strtok(str, " -");
     strcpy(ans.name,p);
     ans.teamID=-1;
-    for(int i =0;i<6;i++){
+    int i;
+    for(i=0;i<6;i++){
 //        printf("name: %s\n", team_list[i].name);
         if(strcmp(team_list[i].name,ans.name)==0){
             ans.teamID=i;
@@ -72,7 +73,7 @@ event str2event(char *str,team team_list[6]) {
     p = strtok(NULL, " -:");
     ans.endTime = ans.startTime+atoi(p);
 
-    for (int i =0;i<6;i++){
+    for (i=0;i<6;i++){
         if (strcmp(team_list[i].name,ans.name)==0){
             strcpy(ans.project ,team_list[i].project);
         }
@@ -84,7 +85,8 @@ void print_event(event e, person person_list[9]) {
 }
 
 int member_id(char *name, person person_list[9]) {
-    for (int i = 0; i < 9; i++) {
+    int i;
+    for (i = 0; i < 9; i++) {
         if (strcmp(name, person_list[i].name) == 0) {
             return i;
         }
