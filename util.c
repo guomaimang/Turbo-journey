@@ -110,8 +110,8 @@ char* event2str(char sig,event *e,char str[]){
 int reschedule(event* e, int wfd[8][2], int rfd[8][2]){
     int bias;
     int day = e->holdDay;
-    int st = e->startTime;
-    int et = e->endTime;
+    int st = e->startTime - 9;
+    int et = e->endTime - 9;
     int dur = e->endTime - e->startTime;
     int i;
     
