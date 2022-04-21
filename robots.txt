@@ -1,0 +1,5 @@
+
+User-agent:*
+Disallow:
+
+Sitemap: https://guomaimang.github.io/Turbo-journey/sitemap.xml
