@@ -1,12 +1,4 @@
-# COMP2432 GROUP PROJECT REPORT
-
-YANG Rongtao	 20
-LIU Qianli			  20
-MA Suizhi			 20
-GENG Longling	20080439d
-HAN Jiaming		20075519d
-
-Project/ Program name: Turbo-Journey
+# Turbo-Journey
 
 ## 1. Introduction
 
@@ -31,8 +23,6 @@ Finally, using two scheduling algorithms, referring to the First Come First Serv
 - Modular design
 - Enhanced flexibility and maintainability
 - The self-design algorithm approaches to reach the overall best performance under research and testing
-
-<img src="https://user-images.githubusercontent.com/72927666/163893030-63b78554-dd5c-43a2-b6be-285f09199c9e.png" alt="image" style="zoom: 67%;" />
 
 
 ## 2. Scope about OS
