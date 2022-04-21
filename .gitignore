@@ -52,3 +52,10 @@ Mkfile.old
 dkms.conf
 .DS_Store
 .DS_Store
+
+
+node_modules/
+docs/docs/.vuepress/.cache/
+docs/docs/.vuepress/.temp/
+docs/docs/.vuepress/dist/
+
