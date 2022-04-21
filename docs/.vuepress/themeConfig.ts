@@ -3,7 +3,7 @@ import navbar from "./navbar";
 import sidebar from "./sidebar";
 
 export default defineThemeConfig({
-  hostname: "https://guomaimang.github.io/Turbo-journey",
+  hostname: "https://guomaimang.github.io/",
 
   author: {
     name: "Turbo Journey",
