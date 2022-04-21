@@ -56,7 +56,6 @@ The program has a total of 19 processes, including one FF-Process (Parent of F-P
   - F2 Process: Parent Process for Customized algorithm, child of FF
 - Cx Process: Child Process C1 to C8, child of F1 and F2
 
-<img src="https://pic.hanjiaming.com.cn/2022/04/18/093727c7a6245.png" alt="1650297321479.png" style="zoom: 25%;" />
 
 The program consists of three-level processes (FF-Process, F-process, C-Process), each consisting of two files, a C header file, which stores the declarations of functions and global variables, and a C source file, which stores the definitions and implementation of functions and global variables. The structure of such a program follows the C programming specification. Such a specification reduces code duplication, prevents duplicate variable definitions, enables programmers to locate code quickly and increases the efficiency of the team when writing programs.
 
@@ -76,9 +75,6 @@ Turbo-Journey uses pipelines for communication among process. Each pipeline is u
 
 <img src="https://pic.hanjiaming.com.cn/2022/04/19/fa758c08586b2.png" alt="1650297870137.png" style="zoom:50%;" />
 
-### 3.4. How to work
-
-<img src="https://pic.hanjiaming.com.cn/2022/04/19/1a751c07110ba.png" alt="1650349547182.png" style="zoom:50%;" />
 
 ## 4. Communication Standards
 
