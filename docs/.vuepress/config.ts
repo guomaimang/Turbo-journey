@@ -6,7 +6,7 @@ export default defineHopeConfig({
   title: "Turbo Journey",
   description: "Docs Page",
 
-  base: "/",
+  base: "/Turbo-journey/",
 
   head: [
     [
