@@ -27,6 +27,8 @@ export default defineThemeConfig({
 
   displayFooter: true,
 
+  headerDepth: 1,
+
   pageInfo: ["Author", "Original", "Date", "Category", "Tag", "ReadingTime"],
 
   blog: {
@@ -84,10 +86,10 @@ export default defineThemeConfig({
        * Using giscus
        */
       type: "giscus",
-      repo: "vuepress-theme-hope/giscus-discussions",
-      repoId: "R_kgDOG_Pt2A",
+      repo: "guomaimang/Turbo-journey",
+      repoId: "R_kgDOHDjj1Q",
       category: "Announcements",
-      categoryId: "DIC_kwDOG_Pt2M4COD69",
+      categoryId: "DIC_kwDOHDjj1c4COs8d",
 
       /**
        * Using twikoo
