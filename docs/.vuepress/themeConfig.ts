@@ -15,7 +15,7 @@ export default defineThemeConfig({
 
   repo: "guomaimang/Turbo-journey",
 
-  docsDir: "tree/docs/docs",
+  docsDir: "docs",
 
   // navbar
   navbar: navbar,
