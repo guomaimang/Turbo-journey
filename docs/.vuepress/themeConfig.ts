@@ -34,8 +34,6 @@ export default defineThemeConfig({
   blog: {
     description: "Turbo-journey Teams",
     intro: "/intro.html",
-    medias: {
-    },
   },
 
   encrypt: {
